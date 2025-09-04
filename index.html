@@ -5,8 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>E-Nota Tewe Creative</title>
   <style>
-    /*
-     * CSS Global dan Struktur Halaman
+    /* * CSS Global dan Struktur Halaman
      * Mengatur font, margin, padding, dan layout dasar.
      * Menggunakan Flexbox untuk menengahkan konten utama.
      */
@@ -22,8 +21,7 @@
       gap: 20px;
     }
 
-    /*
-     * Container Nota
+    /* * Container Nota
      * Mengatur lebar, padding, background, dan shadow untuk kotak nota.
      */
     .nota-container {
@@ -40,19 +38,21 @@
     /*
      * Header Nota (Kop Surat)
      * Layout kiri-kanan dengan elemen-elemen di sisi yang berlawanan.
+     * Revisi: Mengurangi jarak garis bawah agar lebih dekat ke teks.
      */
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 40px;
+      margin-bottom: 20px; /* Mengurangi jarak bawah */
       border-bottom: 2px solid #e0e0e0;
-      padding-bottom: 20px;
+      padding-bottom: 10px; /* Mengurangi padding bawah */
     }
 
     /*
      * Bagian Kiri Header
      * Mengatur posisi logo dan info perusahaan.
+     * Menggeser konten ke kiri agar sejajar dengan garis.
      */
     .header-left {
       display: flex;
@@ -60,8 +60,7 @@
       margin-left: -40px; 
     }
 
-    /*
-     * Logo Perusahaan
+    /* * Logo Perusahaan
      * Mengatur ukuran logo.
      */
     .logo {
@@ -110,39 +109,48 @@
 
     /*
      * Bagian Informasi Pelanggan
-     * Mengatur layout menggunakan Grid untuk 'Kepada', 'Tanggal', 'Order'.
+     * Mengatur layout menggunakan Flexbox untuk perataan yang lebih baik.
      */
     .info-section {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
+      display: flex;
+      flex-direction: column; /* Menggunakan Flexbox untuk tata letak vertikal */
+      gap: 5px; /* Mengurangi jarak antar item */
       margin-bottom: 30px;
     }
 
     .info-item {
-      display: flex;
-      align-items: center;
+      display: flex; /* Menggunakan Flexbox untuk item baris */
+      align-items: baseline; /* Menjaga semua elemen sejajar di bagian bawah teks */
     }
 
     .info-item label {
       font-weight: bold;
       color: #555;
-      width: 100px;
+      width: 120px; /* Lebar tetap untuk label agar sejajar */
     }
 
+    /* Menambahkan style untuk simbol titik dua yang terpisah */
+    .info-item .colon {
+      font-weight: bold;
+      color: #555;
+    }
+
+    /* Mengatur jarak agar data sedikit bergeser ke kanan */
     .info-item span {
       color: #333;
+      margin-left: 5px; /* Meningkatkan jarak dari 2px ke 5px */
     }
 
     /*
      * Tabel Barang
-     * Mengatur styling tabel, border, dan shadow.
+     * Menambahkan styling background abu-abu pada thead dan border di luar tabel.
      */
     .table-container {
       margin-bottom: 30px;
       border-radius: 8px;
       overflow: hidden;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      /* Menambahkan border di luar kolom */
+      border: 1px solid #ddd; 
     }
 
     table {
@@ -153,8 +161,9 @@
     }
 
     thead {
-      background-color: #007bff;
-      color: #fff;
+      /* Mengubah warna background thead menjadi abu-abu */
+      background-color: #f0f0f0; 
+      color: #333; /* Mengubah warna teks menjadi abu-abu tua */
     }
 
     thead tr th:first-child {
@@ -308,9 +317,11 @@
      * Mengatur tampilan khusus saat halaman dicetak.
      */
     @media print {
+      /* Mengatur semua konten agar naik ke atas saat dicetak */
       body {
         background: #fff;
         padding: 0;
+        margin-top: -30px; /* Nilai negatif untuk menggeser ke atas */
         display: block;
       }
       .nota-container {
@@ -322,9 +333,30 @@
       .input-controls {
         display: none; /* Menyembunyikan kontrol input saat mencetak */
       }
+
+      /* Revisi: Menyesuaikan margin dan padding untuk .header saat mencetak */
+      .header {
+        margin-bottom: 10px !important; /* Mengurangi jarak bawah secara agresif */
+        padding-bottom: 5px !important; /* Mengurangi padding bawah secara agresif */
+      }
+
+      /* Mengatur ukuran logo dan info perusahaan agar sedikit lebih besar */
+      .logo {
+        width: 120px; /* Ukuran lebih besar dari sebelumnya */
+        height: auto;
+        margin-right: 15px;
+      }
+
+      .company-info h1 {
+        font-size: 1.4em; /* Ukuran lebih besar dari sebelumnya */
+      }
+      .company-info p {
+        font-size: 0.8em; /* Ukuran lebih besar dari sebelumnya */
+      }
+
       /* Menyesuaikan lebar kolom tabel untuk cetak */
       th, td {
-        padding: 8px 5px;
+          padding: 8px 5px;
       }
       th:nth-child(1), td:nth-child(1) { width: 5%; }
       th:nth-child(2), td:nth-child(2) { width: 10%; }
@@ -332,19 +364,29 @@
       th:nth-child(4), td:nth-child(4) { width: 20%; text-align: right; }
       th:nth-child(5), td:nth-child(5) { width: 25%; text-align: right; white-space: nowrap; }
       th:nth-child(6), td:nth-child(6) { display: none; } /* Sembunyikan kolom Aksi */
+      
+      /* Memastikan background abu-abu pada thead tetap muncul saat dicetak */
+      thead {
+        background-color: #f0f0f0 !important; /* Menggunakan !important untuk memastikan override */
+        -webkit-print-color-adjust: exact; /* Untuk browser Webkit agar warna background dicetak */
+        color-adjust: exact; /* Standar CSS untuk memastikan warna background dicetak */
+      }
 
-      /* Aturan untuk watermark yang direvisi */
+      /* Mengatur posisi dan style watermark yang lebih jelas */
       .watermark-print {
         position: fixed; /* Membuat watermark tetap di posisi yang sama saat halaman bergulir */
-        top: 10px; /* Lebih tinggi */
+        top: 5px; /* Mengurangi nilai 'top' agar lebih naik */
         right: 20px; /* Pindah ke kanan */
         left: auto; /* Pastikan tidak ada konflik dengan 'left' */
         font-size: 10px;
-        color: #ddd;
-        opacity: 0.8;
+        color: #888; 
+        opacity: 0.9; 
+        font-style: italic;
         z-index: 9999;
         display: block; /* Menampilkan watermark hanya saat mencetak */
         text-align: right; /* Agar teks rata kanan */
+        -webkit-print-color-adjust: exact; /* Memastikan warna watermark dicetak */
+        color-adjust: exact;
       }
       
       /* Mengatur tampilan nomor halaman saat mencetak */
@@ -356,7 +398,8 @@
         @bottom-right {
           content: "Halaman " counter(page) " dari " counter(pages);
           font-size: 10px;
-          color: #777;
+          color: #888;
+          font-style: italic;
         }
       }
     }
@@ -397,12 +440,11 @@
 
   <div class="nota-container" id="nota">
     
-
-<div class="watermark-print" id="watermark"></div>
+    <div class="watermark-print" id="watermark"></div>
 
     <div class="header">
       <div class="header-left">
-        <img src="logo.svg" class="logo" alt="Logo">
+        <img src="logo.svg" class="logo" alt="Logo Tewe Creative">
         <div class="company-info">
           <h1>Tewe Creative</h1>
           <p>Jasa Desain, Cetak Stiker, Instal Software, dll.</p>
@@ -415,9 +457,8 @@
     </div>
 
     <div class="info-section">
-      <div class="info-item"><label>Kepada:</label><span id="kepadaNota">-</span></div>
-      <div class="info-item"><label>Tanggal:</label><span id="tanggalNota">-</span></div>
-      <div class="info-item"><label>Order:</label><span id="orderNota">-</span></div>
+      <div class="info-item"><label>Tanggal</label><span class="colon">:</span><span id="tanggalNota">-</span></div>
+      <div class="info-item"><label>Kepada Yth.</label><span class="colon">:</span><span id="kepadaNota">-</span></div>
     </div>
 
     <div class="table-container">
@@ -433,15 +474,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr class="item-row">
-            <td class="item-no">1</td>
-            <td><input type="number" class="banyaknya-input" value="1" min="1" oninput="calculateTotal()"></td>
-            <td><input type="text" class="nama-barang-input" placeholder="Nama barang/jasa"></td>
-            <td><input type="text" class="harga-input" value="Rp 0" oninput="formatHarga(this); calculateTotal()"></td>
-            <td class="jumlah-cell">Rp 0</td>
-            <td><button class="btn-delete" onclick="deleteRow(this)">Hapus</button></td>
-          </tr>
-        </tbody>
+          </tbody>
       </table>
     </div>
 
@@ -466,12 +499,11 @@
   <div class="input-controls">
     <h3>Input Data Nota</h3>
     <input type="text" id="noNotaInput" placeholder="No. Nota">
-    <input type="text" id="tanggalInput" placeholder="Tanggal (DD/MM/YYYY)">
+    <input type="text" id="tanggalInput">
     <input type="text" id="kepadaInput" placeholder="Kepada">
-    <input type="text" id="orderInput" placeholder="Order">
     <button onclick="updateNota()">Update Data</button>
     <button onclick="addRow()">Tambah Barang</button>
-    <button onclick="printAndSaveNota()">Print Nota</button> 
+    <button onclick="printAndSaveNota()">Print Nota</button>
     <button class="btn-reset" onclick="resetData()">Reset Data</button>
   </div>
 
@@ -492,7 +524,7 @@
       return parseInt(value.replace(/[^\d]/g, "")) || 0;
     }
 
-    // Fungsi untuk membuat nomor nota otomatis
+    // Fungsi untuk membuat nomor nota otomatis dengan Local Storage
     function generateNotaNumber() {
       const prefix = "E-NT-TR-2025-ORD9-";
       let counter = 1;
@@ -504,12 +536,18 @@
       return prefix + String(counter).padStart(3, "0");
     }
 
+    // Fungsi untuk membuat tanggal hari ini dalam format 'DD Bulan YYYY'
+    function getFormattedDate() {
+        const today = new Date();
+        const options = { day: '2-digit', month: 'long', year: 'numeric' };
+        return today.toLocaleDateString('id-ID', options);
+    }
+
     // Fungsi untuk memperbarui data nota di tampilan utama
     function updateNota() {
       document.getElementById("noNota").textContent = "NO: " + (document.getElementById("noNotaInput").value || "-");
       document.getElementById("tanggalNota").textContent = document.getElementById("tanggalInput").value || "-";
       document.getElementById("kepadaNota").textContent = document.getElementById("kepadaInput").value || "-";
-      document.getElementById("orderNota").textContent = document.getElementById("orderInput").value || "-";
     }
 
     // Fungsi untuk menambah baris barang baru ke tabel
@@ -569,7 +607,6 @@
         noNota: document.getElementById("noNotaInput").value,
         tanggal: document.getElementById("tanggalInput").value,
         kepada: document.getElementById("kepadaInput").value,
-        order: document.getElementById("orderInput").value,
         items: []
       };
       document.querySelectorAll(".item-row").forEach(row => {
@@ -582,35 +619,24 @@
       localStorage.setItem("enotaData", JSON.stringify(data));
     }
 
-    // Fungsi untuk mencetak nota dan menyimpan data setelahnya, serta menambahkan watermark
+    // Fungsi untuk mencetak nota dan menyimpan data, serta menambahkan watermark
     function printAndSaveNota() {
       saveNota();
       
-      // Ambil elemen watermark
       const watermarkElement = document.getElementById("watermark");
-      // Dapatkan tanggal dan waktu saat ini
       const now = new Date();
-      
-      // Atur opsi format tanggal
       const dateOptions = { day: '2-digit', month: 'long', year: 'numeric' };
       const dateString = now.toLocaleDateString('id-ID', dateOptions);
-      
-      // Atur opsi format waktu
       const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
       const timeString = now.toLocaleTimeString('id-ID', timeOptions);
       
-      // Tetapkan teks watermark dengan format baru
       watermarkElement.textContent = `Dicetak pada: ${dateString}, Pukul ${timeString.replace(/\./g, ':')}`;
       
-      // Simpan posisi scroll saat ini
       const scrollPos = window.pageYOffset;
-      // Panggil fungsi cetak bawaan browser
       window.print();
       
-      // Kembalikan posisi scroll setelah proses cetak selesai (penting untuk beberapa browser)
       setTimeout(() => { 
         window.scrollTo(0, scrollPos); 
-        // Hapus teks watermark setelah mencetak
         watermarkElement.textContent = '';
       }, 100);
     }
@@ -629,9 +655,8 @@
       if (savedData) {
         const data = JSON.parse(savedData);
         document.getElementById("noNotaInput").value = data.noNota || generateNotaNumber();
-        document.getElementById("tanggalInput").value = data.tanggal || "";
+        document.getElementById("tanggalInput").value = data.tanggal || getFormattedDate();
         document.getElementById("kepadaInput").value = data.kepada || "";
-        document.getElementById("orderInput").value = data.order || "";
 
         const tableBody = document.querySelector("#tabelBarang tbody");
         tableBody.innerHTML = "";
@@ -660,6 +685,7 @@
       } else {
         // Jika tidak ada data tersimpan, buat nomor nota baru dan tambahkan baris awal
         document.getElementById("noNotaInput").value = generateNotaNumber();
+        document.getElementById("tanggalInput").value = getFormattedDate();
         addRow();
         updateNota();
       }
