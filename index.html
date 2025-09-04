@@ -5,10 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>E-Nota Tewe Creative</title>
   <style>
-    /* * CSS Global dan Struktur Halaman
-    * Mengatur font, margin, padding, dan layout dasar.
-    * Menggunakan Flexbox untuk menengahkan konten utama.
-    */
+    /*
+     * CSS Global dan Struktur Halaman
+     * Mengatur font, margin, padding, dan layout dasar.
+     * Menggunakan Flexbox untuk menengahkan konten utama.
+     */
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
@@ -21,9 +22,10 @@
       gap: 20px;
     }
 
-    /* * Container Nota
-    * Mengatur lebar, padding, background, dan shadow untuk kotak nota.
-    */
+    /*
+     * Container Nota
+     * Mengatur lebar, padding, background, dan shadow untuk kotak nota.
+     */
     .nota-container {
       width: 800px;
       padding: 40px;
@@ -35,9 +37,10 @@
       flex-shrink: 0;
     }
 
-    /* * Header Nota (Kop Surat)
-    * Layout kiri-kanan dengan elemen-elemen di sisi yang berlawanan.
-    */
+    /*
+     * Header Nota (Kop Surat)
+     * Layout kiri-kanan dengan elemen-elemen di sisi yang berlawanan.
+     */
     .header {
       display: flex;
       justify-content: space-between;
@@ -47,20 +50,20 @@
       padding-bottom: 20px;
     }
 
-    /* * Bagian Kiri Header
-    * Mengatur posisi logo dan info perusahaan.
-    * Revisi: Menggeser konten ke kiri agar sejajar dengan garis.
-    */
+    /*
+     * Bagian Kiri Header
+     * Mengatur posisi logo dan info perusahaan.
+     */
     .header-left {
       display: flex;
       align-items: center;
-      /* Penyesuaian agar teks lebih ke kiri */
       margin-left: -40px; 
     }
 
-    /* * Logo Perusahaan
-    * Mengatur ukuran logo.
-    */
+    /*
+     * Logo Perusahaan
+     * Mengatur ukuran logo.
+     */
     .logo {
       width: 170px;
       height: 120px;
@@ -69,9 +72,10 @@
       object-fit: cover;
     }
 
-    /* * Info Perusahaan
-    * Mengatur font dan warna untuk nama perusahaan dan deskripsi.
-    */
+    /*
+     * Info Perusahaan
+     * Mengatur font dan warna untuk nama perusahaan dan deskripsi.
+     */
     .company-info h1 {
       margin: 0;
       font-size: 1.8em;
@@ -84,9 +88,10 @@
       color: #777;
     }
 
-    /* * Bagian Kanan Header
-    * Mengatur posisi teks E-NOTA dan nomornya.
-    */
+    /*
+     * Bagian Kanan Header
+     * Mengatur posisi teks E-NOTA dan nomornya.
+     */
     .header-right {
       text-align: right;
     }
@@ -103,9 +108,10 @@
       color: #555;
     }
 
-    /* * Bagian Informasi Pelanggan
-    * Mengatur layout menggunakan Grid untuk 'Kepada', 'Tanggal', 'Order'.
-    */
+    /*
+     * Bagian Informasi Pelanggan
+     * Mengatur layout menggunakan Grid untuk 'Kepada', 'Tanggal', 'Order'.
+     */
     .info-section {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -128,9 +134,10 @@
       color: #333;
     }
 
-    /* * Tabel Barang
-    * Mengatur styling tabel, border, dan shadow.
-    */
+    /*
+     * Tabel Barang
+     * Mengatur styling tabel, border, dan shadow.
+     */
     .table-container {
       margin-bottom: 30px;
       border-radius: 8px;
@@ -182,9 +189,10 @@
       text-align: inherit;
     }
 
-    /* * Bagian Ringkasan
-    * Mengatur layout Flexbox untuk catatan dan total.
-    */
+    /*
+     * Bagian Ringkasan
+     * Mengatur layout Flexbox untuk catatan dan total.
+     */
     .summary-section {
       display: flex;
       justify-content: space-between;
@@ -222,17 +230,19 @@
       margin-top: 5px;
     }
 
-    /* * Bagian Tanda Tangan
-    * Mengatur posisi tanda tangan agar rata tengah.
-    */
+    /*
+     * Bagian Tanda Tangan
+     * Mengatur posisi tanda tangan agar rata tengah.
+     */
     .signature {
       text-align: center;
       margin-top: 25px;
     }
 
-    /* * Kontrol Input
-    * Mengatur styling untuk bagian input, tombol, dan posisinya.
-    */
+    /*
+     * Kontrol Input
+     * Mengatur styling untuk bagian input, tombol, dan posisinya.
+     */
     .input-controls {
       position: sticky;
       top: 20px;
@@ -293,9 +303,10 @@
       font-size: 12px;
     }
 
-    /* * Media Query untuk Cetak
-    * Mengatur tampilan khusus saat halaman dicetak.
-    */
+    /*
+     * Media Query untuk Cetak
+     * Mengatur tampilan khusus saat halaman dicetak.
+     */
     @media print {
       body {
         background: #fff;
@@ -313,7 +324,7 @@
       }
       /* Menyesuaikan lebar kolom tabel untuk cetak */
       th, td {
-          padding: 8px 5px;
+        padding: 8px 5px;
       }
       th:nth-child(1), td:nth-child(1) { width: 5%; }
       th:nth-child(2), td:nth-child(2) { width: 10%; }
@@ -321,11 +332,39 @@
       th:nth-child(4), td:nth-child(4) { width: 20%; text-align: right; }
       th:nth-child(5), td:nth-child(5) { width: 25%; text-align: right; white-space: nowrap; }
       th:nth-child(6), td:nth-child(6) { display: none; } /* Sembunyikan kolom Aksi */
+
+      /* Aturan untuk watermark yang direvisi */
+      .watermark-print {
+        position: fixed; /* Membuat watermark tetap di posisi yang sama saat halaman bergulir */
+        top: 10px; /* Lebih tinggi */
+        right: 20px; /* Pindah ke kanan */
+        left: auto; /* Pastikan tidak ada konflik dengan 'left' */
+        font-size: 10px;
+        color: #ddd;
+        opacity: 0.8;
+        z-index: 9999;
+        display: block; /* Menampilkan watermark hanya saat mencetak */
+        text-align: right; /* Agar teks rata kanan */
+      }
+      
+      /* Mengatur tampilan nomor halaman saat mencetak */
+      @page {
+        size: A4; /* Mengatur ukuran halaman menjadi A4 */
+        margin: 20mm; /* Mengatur margin halaman */
+        
+        /* Menambahkan nomor halaman di footer */
+        @bottom-right {
+          content: "Halaman " counter(page) " dari " counter(pages);
+          font-size: 10px;
+          color: #777;
+        }
+      }
     }
 
-    /* * Media Query untuk Tampilan Responsif
-    * Mengatur tata letak untuk layar yang lebih kecil.
-    */
+    /*
+     * Media Query untuk Tampilan Responsif
+     * Mengatur tata letak untuk layar yang lebih kecil.
+     */
     @media (max-width: 1200px) {
       body {
         flex-direction: column;
@@ -357,6 +396,10 @@
 <body>
 
   <div class="nota-container" id="nota">
+    
+
+<div class="watermark-print" id="watermark"></div>
+
     <div class="header">
       <div class="header-left">
         <img src="logo.svg" class="logo" alt="Logo">
@@ -428,7 +471,8 @@
     <input type="text" id="orderInput" placeholder="Order">
     <button onclick="updateNota()">Update Data</button>
     <button onclick="addRow()">Tambah Barang</button>
-    <button onclick="printAndSaveNota()">Print Nota</button> <button class="btn-reset" onclick="resetData()">Reset Data</button>
+    <button onclick="printAndSaveNota()">Print Nota</button> 
+    <button class="btn-reset" onclick="resetData()">Reset Data</button>
   </div>
 
   <script>
@@ -538,12 +582,37 @@
       localStorage.setItem("enotaData", JSON.stringify(data));
     }
 
-    // Fungsi untuk mencetak nota dan menyimpan data setelahnya
+    // Fungsi untuk mencetak nota dan menyimpan data setelahnya, serta menambahkan watermark
     function printAndSaveNota() {
       saveNota();
+      
+      // Ambil elemen watermark
+      const watermarkElement = document.getElementById("watermark");
+      // Dapatkan tanggal dan waktu saat ini
+      const now = new Date();
+      
+      // Atur opsi format tanggal
+      const dateOptions = { day: '2-digit', month: 'long', year: 'numeric' };
+      const dateString = now.toLocaleDateString('id-ID', dateOptions);
+      
+      // Atur opsi format waktu
+      const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+      const timeString = now.toLocaleTimeString('id-ID', timeOptions);
+      
+      // Tetapkan teks watermark dengan format baru
+      watermarkElement.textContent = `Dicetak pada: ${dateString}, Pukul ${timeString.replace(/\./g, ':')}`;
+      
+      // Simpan posisi scroll saat ini
       const scrollPos = window.pageYOffset;
+      // Panggil fungsi cetak bawaan browser
       window.print();
-      setTimeout(() => { window.scrollTo(0, scrollPos); }, 100);
+      
+      // Kembalikan posisi scroll setelah proses cetak selesai (penting untuk beberapa browser)
+      setTimeout(() => { 
+        window.scrollTo(0, scrollPos); 
+        // Hapus teks watermark setelah mencetak
+        watermarkElement.textContent = '';
+      }, 100);
     }
 
     // Fungsi untuk mereset data nota dan penyimpanan lokal
