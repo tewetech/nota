@@ -285,20 +285,22 @@
     .input-controls input::placeholder {
       color: #95a5a6; /* Warna placeholder lebih gelap */
     }
-    
+
+    /* * REVISI: Mengatur lebar tombol agar sama dengan input
+     * Tombol sekarang memiliki lebar 100% dari parent-nya
+     * dan padding-nya disesuaikan.
+     */
     .input-controls button {
-      /* Tombol tidak lagi 100% lebar, gunakan display: block dengan margin auto untuk tengah */
       display: block;
-      width: 90%; /* Lebar tombol dikurangi menjadi 90% */
-      margin: 0 auto; /* Menengahkan tombol */
-      padding: 10px; /* Padding tombol dikurangi */
-      border-radius: 6px; /* Sudut sedikit lebih kecil */
-      background-color: #3498db; /* Warna biru tombol lebih gelap */
+      width: 100%; 
+      padding: 10px;
+      border-radius: 6px; 
+      background-color: #3498db; 
       color: #fff;
       border: none;
       cursor: pointer;
       font-weight: bold;
-      font-size: 0.9em; /* Ukuran font tombol dikurangi */
+      font-size: 0.9em; 
       transition: all 0.3s ease;
     }
 
