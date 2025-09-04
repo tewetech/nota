@@ -2,508 +2,576 @@
 <html lang="id">
 <head>
     <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/tewetech/nota/refs/heads/main/favicon-nota.png">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Invoce & Nota Tewe Creative</title>
-  <style>
-    /*
-     * CSS Global dan Struktur Halaman
-     * Mengatur font, margin, padding, dan layout dasar.
-     * Menggunakan Flexbox untuk menengahkan konten utama.
-     */
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      margin: 0;
-      padding: 20px;
-      background-color: #e0e6e9;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
-      gap: 20px;
-    }
-
-    /*
-     * Container Utama (Nota & Invoice)
-     * Mengatur lebar, padding, background, dan shadow untuk kotak dokumen.
-     */
-    .document-container {
-      width: 800px;
-      padding: 40px;
-      background-color: #ffffff;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-      position: relative;
-      overflow: hidden;
-      flex-shrink: 0;
-      transition: all 0.5s ease-in-out;
-    }
-
-    /*
-     * Kelas untuk menyembunyikan kontainer saat tidak aktif
-     */
-    .document-container.hidden {
-      display: none;
-    }
-
-    /*
-     * Header Dokumen (Kop Surat)
-     * Layout kiri-kanan dengan elemen-elemen di sisi yang berlawanan.
-     */
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      border-bottom: 2px solid #cfd8dc;
-      padding-bottom: 10px;
-    }
-
-    /*
-     * Bagian Kiri Header
-     * Mengatur posisi logo dan info perusahaan.
-     */
-    .header-left {
-      display: flex;
-      align-items: center;
-      margin-left: -40px;
-    }
-
-    /*
-     * Logo Perusahaan
-     * Mengatur ukuran logo.
-     */
-    .logo {
-      width: 170px;
-      height: 120px;
-      margin-right: 1px;
-      border-radius: 1%;
-      object-fit: cover;
-    }
-
-    /*
-     * Info Perusahaan
-     * Mengatur font dan warna untuk nama perusahaan dan deskripsi.
-     */
-    .company-info h1 {
-      margin: 0;
-      font-size: 1.8em;
-      color: #2c3e50;
-    }
-
-    .company-info p {
-      margin: 5px 0 0;
-      font-size: 0.9em;
-      color: #7f8c8d;
-    }
-
-    /*
-     * Bagian Kanan Header
-     * Mengatur posisi teks dokumen (E-NOTA/E-INVOICE) dan nomornya.
-     */
-    .header-right {
-      text-align: right;
-    }
-
-    .header-right h2 {
-      margin: 0;
-      font-size: 2.5em;
-      color: #2c3e50;
-    }
-
-    .header-right p {
-      margin: 5px 0 0;
-      font-size: 0.9em;
-      color: #555;
-    }
-
-    /*
-     * Bagian Informasi Pelanggan
-     * Mengatur layout menggunakan Flexbox untuk perataan yang lebih baik.
-     */
-    .info-section {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      margin-bottom: 30px;
-    }
-
-    .info-item {
-      display: flex;
-      align-items: baseline;
-    }
-
-    .info-item label {
-      font-weight: bold;
-      color: #4a6572;
-      width: 120px;
-    }
-
-    /* Menambahkan style untuk simbol titik dua yang terpisah */
-    .info-item .colon {
-      font-weight: bold;
-      color: #4a6572;
-    }
-
-    /* Mengatur jarak agar data sedikit bergeser ke kanan */
-    .info-item span {
-      color: #2c3e50;
-      margin-left: 5px;
-    }
-
-    /*
-     * Tabel Barang
-     * Menambahkan styling background abu-abu pada thead dan border di luar tabel.
-     */
-    .table-container {
-      margin-bottom: 30px;
-      border-radius: 8px;
-      overflow: hidden;
-      border: 1px solid #bdc3c7;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.9em;
-      table-layout: fixed;
-    }
-
-    thead {
-      background-color: #eceff1;
-      color: #34495e;
-    }
-
-    thead tr th:first-child {
-      border-top-left-radius: 8px;
-    }
-    thead tr th:last-child {
-      border-top-right-radius: 8px;
-    }
-
-    th, td {
-      padding: 12px 10px;
-      border-bottom: 1px solid #dde1e5;
-    }
-
-    /* Mengatur lebar kolom tabel */
-    th:nth-child(1), td:nth-child(1) { width: 40px; text-align: center; }
-    th:nth-child(2), td:nth-child(2) { width: 70px; text-align: center; }
-    th:nth-child(3), td:nth-child(3) { width: 220px; }
-    th:nth-child(4), td:nth-child(4) { width: 120px; text-align: right; }
-    th:nth-child(5), td:nth-child(5) { width: 160px; text-align: right; white-space: nowrap; }
-    th:nth-child(6), td:nth-child(6) { width: 70px; text-align: center; }
-
-    tbody tr:nth-child(even) {
-      background-color: #f6f8f9;
-    }
-
-    td input {
-      width: 100%;
-      border: none;
-      background: transparent;
-      padding: 5px;
-      text-align: inherit;
-      color: #2c3e50;
-    }
-
-    /*
-     * Bagian Ringkasan
-     * Mengatur layout Flexbox untuk catatan dan total.
-     */
-    .summary-section {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-    }
-
-    /* Catatan Penting */
-    .notes {
-      width: 45%;
-      font-size: 0.8em;
-      color: #7f8c8d;
-    }
-
-    .notes h4 {
-      margin: 0 0 10px;
-      color: #4a6572;
-    }
-
-    /* Total Harga */
-    .total-section {
-      width: 45%;
-      text-align: right;
-    }
-
-    /* Style untuk setiap baris total */
-    .total-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-
-    .total-row .label {
-      font-size: 1.1em;
-      color: #34495e;
-    }
-
-    /* Style untuk jumlah harga, disamakan untuk Nota dan Invoice */
-    .total-row .amount, .total-amount {
-        font-size: 2.2em; /* Ukuran font lebih besar */
-        color: #2980b9; /* Warna biru yang sama */
-        margin-top: 5px;
-        display: block;
-        text-align: right;
-        font-weight: bold;
-    }
-    
-    /* Style khusus untuk baris "Sisa" pada invoice */
-    .total-row.sisa-row .label {
-      font-size: 1.5em;
-    }
-
-    /*
-     * Bagian Tanda Tangan
-     * Mengatur posisi tanda tangan agar rata tengah.
-     */
-    .signature {
-      text-align: center;
-      margin-top: 25px;
-      color: #4a6572;
-    }
-
-    /*
-     * Kontrol Input Floating
-     * Mengatur styling untuk panel input, tombol, dan posisinya.
-     */
-    .input-controls {
-      position: sticky;
-      top: 20px;
-      background: #fdfefe;
-      padding: 15px;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      z-index: 1000;
-      max-height: calc(100vh - 40px);
-      /* Menghilangkan scrollbar dengan menghilangkan overflow-y */
-      width: 250px;
-    }
-
-    /* Menambahkan layout flex untuk tombol switcher di dalam panel input */
-    .input-controls .switcher-buttons {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-        margin-bottom: 10px;
-    }
-
-    .input-controls .switcher-buttons button {
-        flex-grow: 1;
-        padding: 8px 15px;
-        border-radius: 5px;
-        font-weight: bold;
-        background-color: #95a5a6;
-        color: #fff;
-        border: none;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-
-    .input-controls .switcher-buttons button.active {
-        background-color: #3498db;
-    }
-    
-    .input-controls h3 {
-      margin: 0 0 8px;
-      font-size: 1.1em;
-      color: #2c3e50;
-    }
-
-    .input-controls input {
-      width: 100%;
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid #bdc3c7;
-      box-sizing: border-box;
-      font-size: 0.9em;
-      transition: all 0.3s ease;
-      color: #34495e;
-    }
-
-    .input-controls input::placeholder {
-      color: #95a5a6;
-    }
-
-    .input-controls button {
-      width: 100%;
-      padding: 10px;
-      border-radius: 6px;
-      background-color: #3498db;
-      color: #fff;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 0.9em;
-      transition: all 0.3s ease;
-    }
-
-    /* Efek Hover untuk tombol */
-    .input-controls button:hover {
-      background-color: #217dbb;
-      transform: translateY(-2px);
-    }
-
-    /* Warna khusus untuk tombol tertentu */
-    .btn-add {
-      background-color: #27ae60;
-    }
-
-    .btn-add:hover {
-      background-color: #1f8a4f;
-    }
-
-    .btn-delete {
-      background-color: #e74c3c !important;
-      color: white;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 3px;
-      cursor: pointer;
-      font-size: 12px;
-      transition: background-color 0.3s;
-    }
-
-    .btn-delete:hover {
-      background-color: #c0392b !important;
-    }
-
-    .btn-reset {
-      background-color: #f39c12 !important;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-size: 0.9em;
-      font-weight: bold;
-      transition: background-color 0.3s;
-    }
-
-    .btn-reset:hover {
-      background-color: #e67e22 !important;
-      transform: translateY(-2px);
-    }
-
-    /*
-     * Media Query untuk Cetak
-     * Mengatur tampilan khusus saat halaman dicetak.
-     */
-    @media print {
-      body {
-        background: #fff;
-        padding: 0;
-        margin-top: -30px;
-        display: block;
-      }
-      .document-container {
-        box-shadow: none;
-        border: none;
-        padding: 20px;
-        width: 100%;
-      }
-      .input-controls {
-        display: none;
-      }
-      .header {
-        margin-bottom: 10px !important;
-        padding-bottom: 5px !important;
-      }
-      .logo {
-        width: 120px;
-        height: auto;
-        margin-right: 15px;
-      }
-      .company-info h1 {
-        font-size: 1.4em;
-      }
-      .company-info p {
-        font-size: 0.8em;
-      }
-      th, td {
-        padding: 8px 5px;
-      }
-      th:nth-child(1), td:nth-child(1) { width: 5%; }
-      th:nth-child(2), td:nth-child(2) { width: 10%; }
-      th:nth-child(3), td:nth-child(3) { width: 40%; }
-      th:nth-child(4), td:nth-child(4) { width: 20%; text-align: right; }
-      th:nth-child(5), td:nth-child(5) { width: 25%; text-align: right; white-space: nowrap; }
-      th:nth-child(6), td:nth-child(6) { display: none; }
-      thead {
-        background-color: #eceff1 !important;
-        -webkit-print-color-adjust: exact;
-        color-adjust: exact;
-      }
-      .watermark-print {
-        position: fixed;
-        top: 5px;
-        right: 20px;
-        left: auto;
-        font-size: 10px;
-        color: #888;
-        opacity: 0.9;
-        font-style: italic;
-        z-index: 9999;
-        display: block;
-        text-align: right;
-        -webkit-print-color-adjust: exact;
-        color-adjust: exact;
-      }
-      @page {
-        size: A4;
-        margin: 20mm;
-        @bottom-right {
-          content: "Halaman " counter(page) " dari " counter(pages);
-          font-size: 10px;
-          color: #888;
-          font-style: italic;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice & Nota Tewe Creative</title>
+    <style>
+        /*
+         * Gaya CSS Global dan Struktur Halaman
+         * Mengatur font, margin, padding, dan layout dasar halaman.
+         * Menggunakan Flexbox untuk menengahkan konten utama.
+         */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #e0e6e9;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            gap: 20px;
         }
-      }
-    }
 
-    /*
-     * Media Query untuk Tampilan Responsif
-     * Mengatur tata letak untuk layar yang lebih kecil.
-     */
-    @media (max-width: 1200px) {
-      body {
-        flex-direction: column;
-        align-items: center;
-      }
-      .document-container {
-        width: 95%;
-        padding: 20px;
-      }
-      .input-controls {
-        position: relative;
-        width: 95%;
-        margin-bottom: 20px;
-        max-height: none;
-      }
-      .info-section {
-        grid-template-columns: 1fr;
-      }
-      .summary-section {
-        flex-direction: column;
-        gap: 20px;
-      }
-      .notes, .total-section {
-        width: 100%;
-      }
-    }
-  </style>
+        /*
+         * Kontainer Utama (Nota & Invoice)
+         * Mengatur lebar, padding, latar belakang, dan bayangan untuk kotak dokumen.
+         */
+        .document-container {
+            width: 800px;
+            padding: 40px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+            transition: all 0.5s ease-in-out;
+        }
+
+        /*
+         * Kelas untuk menyembunyikan kontainer saat tidak aktif
+         */
+        .document-container.hidden {
+            display: none;
+        }
+
+        /*
+         * Header Dokumen (Kop Surat)
+         * Layout kiri-kanan dengan elemen-elemen di sisi yang berlawanan.
+         */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #cfd8dc;
+            padding-bottom: 10px;
+        }
+
+        /*
+         * Bagian Kiri Header
+         * Mengatur posisi logo dan info perusahaan.
+         */
+        .header-left {
+            display: flex;
+            align-items: center;
+            margin-left: -40px;
+        }
+
+        /*
+         * Logo Perusahaan
+         * Mengatur ukuran logo.
+         */
+        .logo {
+            width: 170px;
+            height: 120px;
+            margin-right: 1px;
+            border-radius: 1%;
+            object-fit: cover;
+        }
+
+        /*
+         * Info Perusahaan
+         * Mengatur font dan warna untuk nama perusahaan dan deskripsi.
+         */
+        .company-info h1 {
+            margin: 0;
+            font-size: 1.8em;
+            color: #2c3e50;
+        }
+
+        .company-info p {
+            margin: 5px 0 0;
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+
+        /*
+         * Bagian Kanan Header
+         * Mengatur posisi teks dokumen (E-NOTA/E-INVOICE) dan nomornya.
+         */
+        .header-right {
+            text-align: right;
+        }
+
+        .header-right h2 {
+            margin: 0;
+            font-size: 2.5em;
+            color: #2c3e50;
+        }
+
+        .header-right p {
+            margin: 5px 0 0;
+            font-size: 0.9em;
+            color: #555;
+            /* Tambahkan style untuk membuat teks nomor dokumen bisa diedit */
+            outline: none;
+        }
+
+        /*
+         * Bagian Informasi Pelanggan
+         * Mengatur layout menggunakan Flexbox untuk perataan yang lebih baik.
+         */
+        .info-section {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            margin-bottom: 30px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: baseline;
+        }
+
+        .info-item label {
+            font-weight: bold;
+            color: #4a6572;
+            width: 120px;
+        }
+
+        /* Gaya untuk simbol titik dua */
+        .info-item .colon {
+            font-weight: bold;
+            color: #4a6572;
+        }
+        
+        /* Mengatur jarak agar data sedikit bergeser ke kanan */
+        /* Tambahkan gaya agar elemen span bisa diedit */
+        .info-item span {
+            color: #2c3e50;
+            margin-left: 5px;
+            outline: none;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+
+        .info-item span:focus {
+            background-color: #f0f4f7;
+        }
+
+        /*
+         * Tabel Barang
+         * Menambahkan styling latar belakang abu-abu pada thead dan border di luar tabel.
+         */
+        .table-container {
+            margin-bottom: 30px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #bdc3c7;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9em;
+            table-layout: fixed;
+        }
+
+        thead {
+            background-color: #eceff1;
+            color: #34495e;
+        }
+
+        thead tr th:first-child {
+            border-top-left-radius: 8px;
+        }
+        thead tr th:last-child {
+            border-top-right-radius: 8px;
+        }
+
+        th, td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #dde1e5;
+        }
+
+        /* Mengatur lebar kolom tabel */
+        th:nth-child(1), td:nth-child(1) { width: 40px; text-align: center; }
+        th:nth-child(2), td:nth-child(2) { width: 70px; text-align: center; }
+        th:nth-child(3), td:nth-child(3) { width: 220px; }
+        th:nth-child(4), td:nth-child(4) { width: 120px; text-align: right; }
+        th:nth-child(5), td:nth-child(5) { width: 160px; text-align: right; white-space: nowrap; }
+        th:nth-child(6), td:nth-child(6) { width: 70px; text-align: center; }
+
+        tbody tr:nth-child(even) {
+            background-color: #f6f8f9;
+        }
+
+        td input {
+            width: 100%;
+            border: none;
+            background: transparent;
+            padding: 5px;
+            text-align: inherit;
+            color: #2c3e50;
+            outline: none; /* Hilangkan outline default */
+        }
+        
+        td input:focus {
+            background-color: #f0f4f7;
+        }
+
+        /*
+         * Bagian Ringkasan
+         * Mengatur layout Flexbox untuk catatan dan total.
+         */
+        .summary-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        /* Catatan Penting */
+        .notes {
+            width: 45%;
+            font-size: 0.8em;
+            color: #7f8c8d;
+        }
+
+        .notes h4 {
+            margin: 0 0 10px;
+            color: #4a6572;
+        }
+
+        /*
+         * Gaya baru yang disatukan untuk bagian total
+         * Mengatur layout dan font agar konsisten antara nota dan invoice
+         */
+        .total-section {
+            width: 45%;
+            /* Flexbox untuk mengatur item rata kanan dan jaraknya */
+            display: flex;
+            flex-direction: column;
+            gap: 5px; /* Jarak antar baris total */
+            text-align: right; /* Rata kanan semua konten dalam total-section */
+        }
+        
+        .total-row {
+            display: flex;
+            justify-content: flex-end; /* Semua konten di baris rata kanan */
+            align-items: center;
+            font-weight: bold;
+        }
+
+        /* Gaya untuk label (misal: "Total", "DP", "Sisa") */
+        .total-row .label {
+            font-size: 1.1em;
+            color: #34495e;
+            width: auto;
+            margin-right: 10px; /* Jarak antara label dan jumlah */
+        }
+        
+        /* Gaya untuk jumlah harga (misal: "Rp 100.000") */
+        .total-row .amount {
+            font-size: 1.1em; 
+            color: #2980b9; 
+            font-weight: bold;
+            width: 120px; /* Lebar tetap untuk amount agar rata kanan */
+            text-align: right; 
+            outline: none; 
+            padding: 2px 5px; 
+            border-radius: 3px;
+        }
+        
+        .total-row .amount:focus {
+            background-color: #f0f4f7;
+        }
+        
+        /* Gaya khusus untuk baris "Sisa" pada invoice */
+        .total-row.sisa-row .label {
+            font-size: 1.1em; 
+            color: #2c3e50; 
+        }
+        .total-row.sisa-row .amount {
+            font-size: 1.1em; 
+            color: #c0392b; 
+        }
+
+        /*
+         * Bagian Tanda Tangan
+         * Mengatur posisi tanda tangan agar rata kiri.
+         * Menambahkan kontainer pembungkus baru untuk menengahkan teks di dalamnya.
+         */
+        .signature {
+            /* Mengubah rata tengah ke rata kiri */
+            text-align: left;
+            margin-top: 25px;
+            color: #4a6572;
+            /* Membuat teks tanda tangan lebih jelas */
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        /* Menambahkan kelas baru untuk menengahkan teks di dalam kontainer */
+        .signature-content-wrapper {
+            display: inline-block; /* Membuat kontainer menyesuaikan lebar konten */
+            text-align: center; /* Menengahkan teks di dalam kontainer */
+        }
+
+        /*
+         * Catatan invoice tambahan
+         */
+        .notes-invoice {
+            width: 45%;
+            font-size: 0.8em;
+            color: #7f8c8d;
+        }
+
+        .notes-invoice h4 {
+            margin: 0 0 10px;
+            color: #4a6572;
+        }
+
+        /*
+         * Kontrol Input Floating
+         * Mengatur styling untuk panel input, tombol, dan posisinya.
+         */
+        .input-controls {
+            position: sticky;
+            top: 10px;
+            background: #fdfefe;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1000;
+            max-height: calc(100vh - 40px);
+            width: 250px;
+        }
+
+        /* Layout flex untuk tombol switcher di dalam panel input */
+        .input-controls .switcher-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .input-controls .switcher-buttons button {
+            flex-grow: 1;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            background-color: #95a5a6;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .input-controls .switcher-buttons button.active {
+            background-color: #3498db;
+        }
+        
+        .input-controls h3 {
+            margin: 0 0 8px;
+            font-size: 1.1em;
+            color: #2c3e50;
+        }
+
+        .input-controls input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #bdc3c7;
+            box-sizing: border-box;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+            color: #34495e;
+        }
+
+        .input-controls input::placeholder {
+            color: #95a5a6;
+        }
+
+        .input-controls button {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            background-color: #3498db;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        /* Efek Hover untuk tombol */
+        .input-controls button:hover {
+            background-color: #217dbb;
+            transform: translateY(-2px);
+        }
+
+        /* Warna khusus untuk tombol delete di tabel */
+        .btn-delete {
+            background-color: #e74c3c !important;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.3s;
+            width: 60px; /* Menyamakan lebar tombol delete */
+        }
+
+        .btn-delete:hover {
+            background-color: #c0392b !important;
+        }
+
+        /* Gaya untuk tombol tambah di dalam tabel */
+        .btn-add-row {
+            background-color: #3498db; /* Warna biru seperti tombol floating */
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.3s;
+            width: 60px; /* Menyamakan lebar tombol tambah */
+        }
+
+        .btn-add-row:hover {
+            background-color: #217dbb;
+        }
+
+        .btn-reset {
+            background-color: #f39c12 !important;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .btn-reset:hover {
+            background-color: #e67e22 !important;
+            transform: translateY(-2px);
+        }
+
+        /*
+         * Media Query untuk Cetak
+         * Mengatur tampilan khusus saat halaman dicetak.
+         */
+        @media print {
+            body {
+                background: #fff;
+                padding: 0;
+                margin-top: -30px;
+                display: block;
+            }
+            .document-container {
+                box-shadow: none;
+                border: none;
+                padding: 20px;
+                width: 100%;
+            }
+            .input-controls {
+                display: none;
+            }
+            .header {
+                margin-bottom: 10px !important;
+                padding-bottom: 5px !important;
+            }
+            .logo {
+                width: 120px;
+                height: auto;
+                margin-right: 15px;
+            }
+            .company-info h1 {
+                font-size: 1.4em;
+            }
+            .company-info p {
+                font-size: 0.8em;
+            }
+            th, td {
+                padding: 8px 5px;
+            }
+            th:nth-child(1), td:nth-child(1) { width: 5%; }
+            th:nth-child(2), td:nth-child(2) { width: 10%; }
+            th:nth-child(3), td:nth-child(3) { width: 40%; }
+            th:nth-child(4), td:nth-child(4) { width: 20%; text-align: right; }
+            th:nth-child(5), td:nth-child(5) { width: 25%; text-align: right; white-space: nowrap; }
+            th:nth-child(6), td:nth-child(6) { display: none; } /* Sembunyikan kolom aksi saat print */
+            thead {
+                background-color: #eceff1 !important;
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+            }
+            .watermark-print {
+                position: fixed;
+                top: 5px;
+                right: 20px;
+                left: auto;
+                font-size: 10px;
+                color: #888;
+                opacity: 0.9;
+                font-style: italic;
+                z-index: 9999;
+                display: block;
+                text-align: right;
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+            }
+            @page {
+                size: A4;
+                margin: 20mm;
+                @bottom-right {
+                    content: "Halaman " counter(page) " dari " counter(pages);
+                    font-size: 10px;
+                    color: #888;
+                    font-style: italic;
+                }
+            }
+        }
+
+        /*
+         * Media Query untuk Tampilan Responsif
+         * Mengatur tata letak untuk layar yang lebih kecil.
+         */
+        @media (max-width: 1200px) {
+            body {
+                flex-direction: column;
+                align-items: center;
+            }
+            .document-container {
+                width: 95%;
+                padding: 20px;
+            }
+            .input-controls {
+                position: relative;
+                width: 95%;
+                margin-bottom: 20px;
+                max-height: none;
+            }
+            .info-section {
+                grid-template-columns: 1fr;
+            }
+            .summary-section {
+                flex-direction: column;
+                gap: 20px;
+            }
+            .notes, .total-section, .notes-invoice {
+                width: 100%;
+            }
+        }
+    </style>
 </head>
 <body>
 
@@ -514,17 +582,25 @@
         <img src="logo.svg" class="logo" alt="Logo Tewe Creative">
         <div class="company-info">
           <h1>Tewe Creative</h1>
-          <p>Jasa Desain, Cetak Stiker, Instal Software, dll.</p>
+          <p>Jagonya Komputer, Jagonya Cetak!</p>
         </div>
       </div>
       <div class="header-right">
         <h2>E-NOTA</h2>
-        <p id="noNota">NO: -</p>
+        <p id="noNota" contenteditable="true">NO: -</p>
       </div>
     </div>
     <div class="info-section">
-      <div class="info-item"><label>Tanggal</label><span class="colon">:</span><span id="tanggalNota">-</span></div>
-      <div class="info-item"><label>Kepada Yth.</label><span class="colon">:</span><span id="kepadaNota">-</span></div>
+      <div class="info-item">
+        <label>Tanggal</label>
+        <span class="colon">:</span>
+        <span id="tanggalNota" contenteditable="true">-</span>
+      </div>
+      <div class="info-item">
+        <label>Kepada Yth.</label>
+        <span class="colon">:</span>
+        <span id="kepadaNota" contenteditable="true">-</span>
+      </div>
     </div>
     <div class="table-container">
       <table id="tabelBarangNota">
@@ -549,13 +625,17 @@
         <p>Terima kasih telah berbelanja di toko kami.</p>
       </div>
       <div class="total-section">
-        <div class="total-label">TOTAL (LUNAS)</div>
-        <div class="total-amount" id="totalHargaNota">Rp 0</div>
+        <div class="total-row">
+            <span class="label">TOTAL (LUNAS)</span>
+            <span class="amount" id="totalHargaNota">Rp 0</span>
+        </div>
       </div>
     </div>
     <div class="signature">
-      <p>Hormat Kami,</p>
-      <p>( Tewe Creative )</p>
+        <div class="signature-content-wrapper">
+          <p>Hormat Kami,</p>
+          <p>( Tewe Creative )</p>
+        </div>
     </div>
   </div>
 
@@ -566,17 +646,25 @@
         <img src="logo.svg" class="logo" alt="Logo Tewe Creative">
         <div class="company-info">
           <h1>Tewe Creative</h1>
-          <p>Jasa Desain, Cetak Stiker, Instal Software, dll.</p>
+          <p>Jagonya Komputer, Jagonya Cetak!</p>
         </div>
       </div>
       <div class="header-right">
         <h2>E-INVOICE</h2>
-        <p id="noInvoice">NO: -</p>
+        <p id="noInvoice" contenteditable="true">NO: -</p>
       </div>
     </div>
     <div class="info-section">
-      <div class="info-item"><label>Tanggal</label><span class="colon">:</span><span id="tanggalInvoice">-</span></div>
-      <div class="info-item"><label>Kepada Yth.</label><span class="colon">:</span><span id="kepadaInvoice">-</span></div>
+      <div class="info-item">
+        <label>Tanggal</label>
+        <span class="colon">:</span>
+        <span id="tanggalInvoice" contenteditable="true">-</span>
+      </div>
+      <div class="info-item">
+        <label>Kepada Yth.</label>
+        <span class="colon">:</span>
+        <span id="kepadaInvoice" contenteditable="true">-</span>
+      </div>
     </div>
     <div class="table-container">
       <table id="tabelBarangInvoice">
@@ -595,30 +683,30 @@
       </table>
     </div>
     <div class="summary-section">
-      <div class="notes">
+      <div class="notes-invoice">
         <h4>Catatan Penting:</h4>
         <p>Barang yang sudah dibeli tidak dapat ditukar atau dikembalikan.</p>
-        <p>Invoice ini dibuat secara otomatis dan tidak memerlukan tanda tangan basah. Pembayaran dapat dilakukan via transfer.</p>
+        <p>Invoice ini dibuat secara otomatis dan tidak memerlukan tanda tangan basah. </p>
+		<p>Pembayaran dapat dilakukan via transfer.</p>
         <p>Terima kasih telah berbelanja di toko kami.</p>
       </div>
       <div class="total-section">
         <div class="total-row">
             <span class="label">Total</span>
-            <span class="amount" id="totalHargaInvoice">Rp 0</span>
-        </div>
+            <span class="amount" id="totalHargaInvoice" contenteditable="false">Rp 0</span> </div>
         <div class="total-row">
-            <span class="label">DP</span>
-            <span class="amount" id="dpHarga">Rp 0</span>
-        </div>
+            <span class="label">Uang Muka</span>
+            <span class="amount" id="dpHarga" contenteditable="true" oninput="formatAndCalculate(this)">Rp 0</span> </div>
         <div class="total-row sisa-row">
             <span class="label">Sisa</span>
-            <span class="amount" id="sisaHarga">Rp 0</span>
-        </div>
+            <span class="amount" id="sisaHarga" contenteditable="false">Rp 0</span> </div>
       </div>
     </div>
     <div class="signature">
-      <p>Hormat Kami,</p>
-      <p>( Tewe Creative )</p>
+        <div class="signature-content-wrapper">
+          <p>Hormat Kami,</p>
+          <p>( Tewe Creative )</p>
+        </div>
     </div>
   </div>
 
@@ -627,21 +715,8 @@
       <button id="btn-invoice" class="active">Invoice</button>
       <button id="btn-nota">Nota</button>
     </div>
-    <h3 id="input-header">Input Data Invoice</h3>
-    <input type="text" id="noInput" placeholder="No. Dokumen">
-    <input type="date" id="tanggalInput">
-    <input type="text" id="kepadaInput" placeholder="Kepada">
-    <button onclick="updateDocument()">Update Data</button>
     <hr>
-    <h3>Input Barang</h3>
-    <button class="btn-add" onclick="addRow()">Tambah Barang</button>
-    <hr>
-    <div id="dp-section">
-      <h3>Pembayaran</h3>
-      <input type="text" id="dpInput" placeholder="Uang Muka (DP)" oninput="formatHarga(this); calculateAll()">
-      <hr>
-    </div>
-    <button id="printBtn" onclick="printAndSaveDocument()">Print Invoice</button>
+    <button id="printBtn" onclick="printDocument()">Print Invoice</button>
     <button class="btn-reset" onclick="resetData()">Reset Data</button>
   </div>
 
@@ -652,107 +727,277 @@
     // Mendapatkan elemen DOM yang dibutuhkan
     const notaContainer = document.getElementById('nota-container');
     const invoiceContainer = document.getElementById('invoice-container');
-    const inputControls = document.getElementById('input-controls');
-    const dpSection = document.getElementById('dp-section');
-    const inputHeader = document.getElementById('input-header');
     const printBtn = document.getElementById('printBtn');
     const btnNota = document.getElementById('btn-nota');
     const btnInvoice = document.getElementById('btn-invoice');
-    
-    // Fungsi untuk memformat harga ke format Rupiah
-    function formatHarga(input) {
-      let value = input.value.replace(/[^\d]/g, "");
+
+    // Fungsi untuk memformat harga ke format Rupiah (untuk input type text)
+    function formatHarga(inputElement) {
+      let value = inputElement.value.replace(/[^\d]/g, ""); // Hapus semua kecuali digit
       if (value === "") {
-        input.value = "Rp 0";
+        inputElement.value = "Rp 0";
         return;
       }
       let formatted = new Intl.NumberFormat("id-ID").format(value);
-      input.value = "Rp " + formatted;
+      inputElement.value = "Rp " + formatted;
+    }
+
+    // Fungsi untuk memformat teks harga (dari contenteditable) ke format Rupiah
+    function formatTextHarga(textValue) {
+        let value = textValue.replace(/[^\d]/g, ""); // Hapus semua kecuali digit
+        if (value === "") {
+            return "Rp 0";
+        }
+        let formatted = new Intl.NumberFormat("id-ID").format(value);
+        return "Rp " + formatted;
     }
 
     // Fungsi untuk menguraikan harga dari format Rupiah menjadi integer
     function parseHarga(value) {
       return parseInt(value.replace(/[^\d]/g, "")) || 0;
     }
-
-    // Fungsi untuk membuat nomor dokumen otomatis berdasarkan mode
-    function generateDocumentNumber() {
-      const prefix = currentMode === 'nota' ? "E-NT-TR-2025-ORD9-" : "E-INV-TR-2025-ORD9-";
-      const storageKey = currentMode === 'nota' ? "notaCounter" : "invoiceCounter";
-      let counter = 1;
-      const savedCounter = localStorage.getItem(storageKey);
-      if (savedCounter) {
-        counter = parseInt(savedCounter) + 1;
-      }
-      localStorage.setItem(storageKey, counter);
-      return prefix + String(counter).padStart(3, "0");
+    
+    // Fungsi baru untuk mendapatkan posisi kursor pada elemen contenteditable
+    function saveCaretPosition(element) {
+        const selection = window.getSelection();
+        if (selection.rangeCount > 0) {
+            const range = selection.getRangeAt(0);
+            const preCaretRange = range.cloneRange();
+            preCaretRange.selectNodeContents(element);
+            preCaretRange.setEnd(range.endContainer, range.endOffset);
+            return preCaretRange.toString().length;
+        }
+        return 0;
     }
 
-    // Fungsi untuk mendapatkan tanggal hari ini dalam format 'DD Bulan YYYY'
-    function getFormattedDate(dateString) {
-      const date = dateString ? new Date(dateString) : new Date();
+    // Fungsi baru untuk mengembalikan posisi kursor pada elemen contenteditable
+    function restoreCaretPosition(element, position) {
+        const range = document.createRange();
+        const selection = window.getSelection();
+        let chars = 0;
+        let found = false;
+        
+        for (let node of element.childNodes) {
+            if (node.nodeType === Node.TEXT_NODE) {
+                const nodeText = node.textContent;
+                if (chars + nodeText.length >= position) {
+                    range.setStart(node, position - chars);
+                    range.collapse(true);
+                    found = true;
+                    break;
+                }
+                chars += nodeText.length;
+            }
+        }
+    
+        if (!found) {
+            range.selectNodeContents(element);
+            range.collapse(false);
+        }
+        
+        selection.removeAllRanges();
+        selection.addRange(range);
+    }
+
+
+    /**
+     * @description Fungsi untuk membuat nomor dokumen otomatis berdasarkan mode dan timestamp.
+     * @returns {string} Nomor dokumen dalam format 'PREFIX-TAHUN-BULAN-TANGGAL-JAM-MENIT'.
+     */
+    function generateDocumentNumber() {
+      const now = new Date();
+      // Mengambil tahun, bulan, tanggal, jam, dan menit. Pastikan format dua digit.
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0'); // getMonth() mengembalikan 0-11
+      const day = String(now.getDate()).padStart(2, '0');
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+
+      const prefix = currentMode === 'nota' ? "E-NT-TR" : "E-INV-TR";
+      
+      // Menggabungkan semua komponen menjadi format yang diminta.
+      return `${prefix}-${year}-ORD${month}-${day}-${hours}-${minutes}`;
+    }
+
+    /**
+     * @description Fungsi untuk mendapatkan tanggal hari ini dalam format 'DD Bulan YYYY'.
+     * @param {Date} dateObj - Objek tanggal.
+     * @returns {string} Tanggal yang diformat.
+     */
+    function getFormattedDate(dateObj) {
       const options = { day: '2-digit', month: 'long', year: 'numeric' };
-      return date.toLocaleDateString('id-ID', options);
+      return dateObj.toLocaleDateString('id-ID', options);
     }
     
-    // Fungsi untuk memperbarui data dokumen di tampilan utama
+    /**
+     * @description Fungsi untuk memperbarui data dokumen di tampilan utama secara otomatis.
+     */
     function updateDocument() {
-      const noInput = document.getElementById("noInput").value;
-      const tanggalInput = document.getElementById("tanggalInput").value;
-      const kepadaInput = document.getElementById("kepadaInput").value;
-      
-      const tanggalFormatted = getFormattedDate(tanggalInput);
+      const now = new Date();
+      const tanggalFormatted = getFormattedDate(now);
+      const noDokumen = generateDocumentNumber();
       
       if (currentMode === 'nota') {
-        document.getElementById("noNota").textContent = "NO: " + (noInput || "-");
-        document.getElementById("tanggalNota").textContent = tanggalFormatted || "-";
-        document.getElementById("kepadaNota").textContent = kepadaInput || "-";
+        document.getElementById("noNota").textContent = "NO: " + noDokumen;
+        document.getElementById("tanggalNota").textContent = tanggalFormatted;
+        document.getElementById("kepadaNota").textContent = "-"; // Default value
       } else {
-        document.getElementById("noInvoice").textContent = "NO: " + (noInput || "-");
-        document.getElementById("tanggalInvoice").textContent = tanggalFormatted || "-";
-        document.getElementById("kepadaInvoice").textContent = kepadaInput || "-";
+        document.getElementById("noInvoice").textContent = "NO: " + noDokumen;
+        document.getElementById("tanggalInvoice").textContent = tanggalFormatted;
+        document.getElementById("kepadaInvoice").textContent = "-"; // Default value
       }
     }
 
-    // Fungsi untuk menambah baris barang baru ke tabel
+    /**
+     * @description Fungsi untuk membuat baris barang baru.
+     * @returns {HTMLTableRowElement} Elemen baris tabel baru.
+     */
+    function createRow() {
+        const newRow = document.createElement("tr");
+        newRow.className = "item-row";
+        newRow.innerHTML = `
+            <td class="item-no"></td>
+            <td><input type="number" class="banyaknya-input" value="1" min="1" oninput="calculateAll()"></td>
+            <td><input type="text" class="nama-barang-input" placeholder="Nama barang/jasa"></td>
+            <td><input type="text" class="harga-input" value="Rp 0" oninput="formatHarga(this); calculateAll()"></td>
+            <td class="jumlah-cell">Rp 0</td>
+            <td></td>
+        `;
+
+        // Menambahkan event listener ke input harga dan nama barang
+        const inputs = newRow.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('focusout', handleInputFocusOut);
+        });
+
+        return newRow;
+    }
+
+    /**
+     * @description Fungsi untuk menambah baris barang baru ke tabel.
+     */
     function addRow() {
       const tableBody = document.querySelector(`#tabelBarang${currentMode === 'nota' ? 'Nota' : 'Invoice'} tbody`);
-      const rowCount = tableBody.rows.length;
-      const newRow = document.createElement("tr");
-      newRow.className = "item-row";
-      newRow.innerHTML = `
-        <td class="item-no">${rowCount + 1}</td>
-        <td><input type="number" class="banyaknya-input" value="1" min="1" oninput="calculateAll()"></td>
-        <td><input type="text" class="nama-barang-input" placeholder="Nama barang/jasa"></td>
-        <td><input type="text" class="harga-input" value="Rp 0" oninput="formatHarga(this); calculateAll()"></td>
-        <td class="jumlah-cell">Rp 0</td>
-        <td><button class="btn-delete" onclick="deleteRow(this)">Hapus</button></td>
-      `;
+      const newRow = createRow();
       tableBody.appendChild(newRow);
       updateRowNumbers();
     }
+    
+    /**
+     * @description Menangani penambahan baris baru secara otomatis.
+     * Jika pengguna keluar dari baris terakhir dan semua inputnya tidak kosong, baris baru ditambahkan.
+     * @param {FocusEvent} event
+     */
+    function handleInputFocusOut(event) {
+        const row = event.target.closest('tr');
+        const tableBody = row.parentElement;
+        const rows = Array.from(tableBody.children);
+        const lastRow = rows[rows.length - 1];
 
-    // Fungsi untuk menghapus baris barang
+        if (row === lastRow) {
+            const inputs = Array.from(row.querySelectorAll('input'));
+            // Cek apakah semua input di baris terakhir memiliki nilai dan harga > 0
+            const allInputsFilled = inputs.every(input => {
+                if (input.classList.contains('harga-input')) {
+                    return parseHarga(input.value) > 0;
+                }
+                return input.value.trim() !== '';
+            });
+
+            if (allInputsFilled) {
+                // Tambahkan baris baru
+                addRow();
+            }
+        }
+    }
+
+    /**
+     * @description Fungsi untuk menghapus baris barang.
+     * @param {HTMLButtonElement} button - Tombol 'Hapus' yang diklik.
+     */
     function deleteRow(button) {
-      const tableBody = document.querySelector(`#tabelBarang${currentMode === 'nota' ? 'Nota' : 'Invoice'} tbody`);
-      if (tableBody.rows.length > 1) {
-        button.closest("tr").remove();
+      const row = button.closest("tr");
+      const tableBody = row.parentElement;
+      if (tableBody.rows.length > 1) { // Pastikan selalu ada minimal 1 baris
+        row.remove();
         updateRowNumbers();
         calculateAll();
-      } else {
-        alert("Minimal harus ada 1 baris barang!");
       }
     }
 
-    // Fungsi untuk memperbarui nomor urut baris setelah menambah/menghapus
+    /**
+     * @description Fungsi untuk memperbarui nomor urut baris dan tombol aksi.
+     */
     function updateRowNumbers() {
-      const rows = document.querySelectorAll(`#tabelBarang${currentMode === 'nota' ? 'Nota' : 'Invoice'} .item-row`);
-      rows.forEach((row, index) => {
-        row.querySelector(".item-no").textContent = index + 1;
-      });
+        const tableBody = document.querySelector(`#tabelBarang${currentMode === 'nota' ? 'Nota' : 'Invoice'} tbody`);
+        const rows = tableBody.querySelectorAll(".item-row");
+        const rowCount = rows.length;
+
+        rows.forEach((row, index) => {
+            // Perbarui nomor urut
+            row.querySelector(".item-no").textContent = index + 1;
+            
+            // Perbarui tombol aksi
+            const actionCell = row.querySelector("td:last-child");
+            actionCell.innerHTML = ''; // Kosongkan cell aksi
+
+            if (rowCount > 1 && index < rowCount - 1) {
+                // Tambahkan tombol hapus untuk baris selain yang terakhir
+                const deleteButton = document.createElement('button');
+                deleteButton.className = 'btn-delete';
+                deleteButton.textContent = 'Hapus';
+                deleteButton.onclick = () => deleteRow(deleteButton);
+                actionCell.appendChild(deleteButton);
+            } else if (index === rowCount - 1) {
+                // Tambahkan tombol tambah di baris terakhir
+                const addButton = document.createElement('button');
+                addButton.className = 'btn-add-row'; // Menggunakan class baru untuk gaya
+                addButton.textContent = 'Tambah';
+                addButton.onclick = () => addRow();
+                actionCell.appendChild(addButton);
+            }
+        });
     }
 
-    // Fungsi untuk menghitung total harga (dan DP/Sisa jika mode invoice)
+    // Fungsi untuk memformat dan menghitung ulang ketika input DP di invoice berubah
+    function formatAndCalculate(element) {
+        const initialText = element.textContent;
+        const rawValue = initialText.replace(/[^\d]/g, '');
+        const formattedValue = formatTextHarga(rawValue);
+
+        // Hanya perbarui jika teks berubah
+        if (formattedValue !== initialText) {
+            // Simpan posisi kursor relatif dari akhir string
+            const selection = window.getSelection();
+            let caretOffsetFromEnd = initialText.length - selection.focusOffset;
+
+            // Hapus semua konten dan masukkan teks baru
+            element.textContent = formattedValue;
+            
+            // Hitung posisi kursor baru
+            const newTextLength = formattedValue.length;
+            const newCaretPosition = newTextLength - caretOffsetFromEnd;
+
+            // Kembalikan kursor ke posisi yang tepat
+            const range = document.createRange();
+            const textNode = element.firstChild;
+            
+            if (textNode) {
+                const finalPosition = Math.min(newCaretPosition, textNode.length);
+                range.setStart(textNode, finalPosition);
+                range.collapse(true);
+                selection.removeAllRanges();
+                selection.addRange(range);
+            }
+        }
+        // Hitung ulang semua total
+        calculateAll();
+    }
+
+
+    /**
+     * @description Fungsi untuk menghitung total harga (dan DP/Sisa jika mode invoice).
+     */
     function calculateAll() {
       let grandTotal = 0;
       document.querySelectorAll(`#tabelBarang${currentMode === 'nota' ? 'Nota' : 'Invoice'} .item-row`).forEach(row => {
@@ -766,37 +1011,21 @@
       if (currentMode === 'nota') {
         document.getElementById("totalHargaNota").textContent = "Rp " + grandTotal.toLocaleString("id-ID");
       } else {
-        const dp = parseHarga(document.getElementById("dpInput").value);
+        // Ambil nilai DP dari elemen contenteditable
+        const dpElement = document.getElementById("dpHarga");
+        const dp = parseHarga(dpElement.textContent);
+        
         const sisa = grandTotal - dp;
 
         document.getElementById("totalHargaInvoice").textContent = "Rp " + grandTotal.toLocaleString("id-ID");
-        document.getElementById("dpHarga").textContent = "Rp " + dp.toLocaleString("id-ID");
         document.getElementById("sisaHarga").textContent = "Rp " + sisa.toLocaleString("id-ID");
       }
     }
 
-    // Fungsi untuk menyimpan data secara otomatis ke Local Storage
-    function saveDocument() {
-      const data = {
-        no: document.getElementById("noInput").value,
-        tanggal: document.getElementById("tanggalInput").value,
-        kepada: document.getElementById("kepadaInput").value,
-        dp: currentMode === 'invoice' ? document.getElementById("dpInput").value : null,
-        items: []
-      };
-      document.querySelectorAll(`#tabelBarang${currentMode === 'nota' ? 'Nota' : 'Invoice'} .item-row`).forEach(row => {
-        data.items.push({
-          banyaknya: row.querySelector(".banyaknya-input").value,
-          namaBarang: row.querySelector(".nama-barang-input").value,
-          harga: row.querySelector(".harga-input").value
-        });
-      });
-      localStorage.setItem(`${currentMode}Data`, JSON.stringify(data));
-    }
-
-    // Fungsi untuk mencetak dokumen dan menyimpan data
-    function printAndSaveDocument() {
-      saveDocument();
+    /**
+     * @description Fungsi untuk mencetak dokumen.
+     */
+    function printDocument() {
       const watermarkElementId = currentMode === 'nota' ? "watermark-nota" : "watermark-invoice";
       const watermarkElement = document.getElementById(watermarkElementId);
       const now = new Date();
@@ -814,93 +1043,55 @@
       }, 100);
     }
 
-    // Fungsi untuk mereset data dokumen dan penyimpanan lokal
+    /**
+     * @description Fungsi untuk mereset semua data di antarmuka.
+     */
     function resetData() {
-      if (confirm(`Apakah Anda yakin ingin mereset data ${currentMode === 'nota' ? 'nota' : 'invoice'}? Ini akan menghapus semua data yang tersimpan.`)) {
-        localStorage.removeItem(`${currentMode}Data`);
-        localStorage.removeItem(`${currentMode}Counter`);
-        // Muat ulang halaman untuk memulai dari awal
-        location.reload();
-      }
-    }
-
-    // Fungsi untuk memuat data dari Local Storage
-    function loadSavedData() {
-      const savedData = localStorage.getItem(`${currentMode}Data`);
-      const noInputEl = document.getElementById("noInput");
-      const tanggalInputEl = document.getElementById("tanggalInput");
-      const kepadaInputEl = document.getElementById("kepadaInput");
-      const tableBody = document.querySelector(`#tabelBarang${currentMode === 'nota' ? 'Nota' : 'Invoice'} tbody`);
-      
-      const today = new Date().toISOString().slice(0, 10);
-      
-      if (savedData) {
-        const data = JSON.parse(savedData);
-        noInputEl.value = data.no || generateDocumentNumber();
-        tanggalInputEl.value = data.tanggal || today;
-        kepadaInputEl.value = data.kepada || "";
+      if (confirm(`Apakah Anda yakin ingin mereset data ${currentMode === 'nota' ? 'nota' : 'invoice'}?`)) {
+        const tableBody = document.querySelector(`#tabelBarang${currentMode === 'nota' ? 'Nota' : 'Invoice'} tbody`);
+        
         if (currentMode === 'invoice') {
-          document.getElementById("dpInput").value = data.dp || "Rp 0";
+          // Reset DP langsung di elemen contenteditable
+          document.getElementById("dpHarga").textContent = "Rp 0";
         }
 
-        tableBody.innerHTML = "";
-        if (data.items && data.items.length > 0) {
-          data.items.forEach(item => {
-            const newRow = document.createElement("tr");
-            newRow.className = "item-row";
-            newRow.innerHTML = `
-              <td class="item-no"></td>
-              <td><input type="number" class="banyaknya-input" value="${item.banyaknya}" min="1" oninput="calculateAll()"></td>
-              <td><input type="text" class="nama-barang-input" value="${item.namaBarang}" placeholder="Nama barang/jasa"></td>
-              <td><input type="text" class="harga-input" value="${item.harga}" oninput="formatHarga(this); calculateAll()"></td>
-              <td class="jumlah-cell">Rp 0</td>
-              <td><button class="btn-delete" onclick="deleteRow(this)">Hapus</button></td>
-            `;
-            tableBody.appendChild(newRow);
-          });
-        } else {
-          addRow();
-        }
-        updateRowNumbers();
-      } else {
-        noInputEl.value = generateDocumentNumber();
-        tanggalInputEl.value = today;
-        kepadaInputEl.value = "";
-        if (currentMode === 'invoice') {
-          document.getElementById("dpInput").value = "Rp 0";
-        }
+        // Hapus semua baris dan tambahkan satu baris baru
         tableBody.innerHTML = "";
         addRow();
+
+        // Perbarui tampilan dengan data default yang baru
+        updateDocument();
+        calculateAll();
       }
-      calculateAll();
-      updateDocument();
     }
 
-    // Fungsi untuk beralih antara Nota dan Invoice
+    /**
+     * @description Fungsi untuk beralih antara Nota dan Invoice.
+     * @param {string} mode - Mode yang akan diaktifkan ('nota' atau 'invoice').
+     */
     function switchMode(mode) {
         if (currentMode === mode) return;
 
         currentMode = mode;
         const printBtnText = mode === 'nota' ? 'Print Nota' : 'Print Invoice';
-        const inputHeaderTitle = mode === 'nota' ? 'Input Data Nota' : 'Input Data Invoice';
 
         // Mengganti tampilan dokumen
         notaContainer.classList.toggle('hidden', mode !== 'nota');
         invoiceContainer.classList.toggle('hidden', mode !== 'invoice');
 
-        // Menampilkan/menyembunyikan bagian DP
-        dpSection.style.display = mode === 'invoice' ? 'block' : 'none';
-
-        // Memperbarui teks tombol dan judul input
+        // Memperbarui teks tombol print
         printBtn.textContent = printBtnText;
-        inputHeader.textContent = inputHeaderTitle;
 
         // Mengatur status aktif pada tombol switcher
         btnNota.classList.toggle('active', mode === 'nota');
         btnInvoice.classList.toggle('active', mode === 'invoice');
+        
+        const tableBody = document.querySelector(`#tabelBarang${currentMode === 'nota' ? 'Nota' : 'Invoice'} tbody`);
+        tableBody.innerHTML = "";
+        addRow(); // Tambahkan satu baris default
 
-        // Memuat data yang sesuai dengan mode baru
-        loadSavedData();
+        updateDocument();
+        calculateAll();
     }
 
     // Event listener saat tombol Nota diklik
@@ -911,10 +1102,9 @@
 
     // Event listener saat halaman dimuat pertama kali
     window.onload = () => {
-      // Pastikan mode awal adalah 'invoice'
-      switchMode('invoice');
+      // Pastikan mode awal adalah 'invoice' dan jalankan fungsi setup
+      switchMode('nota');
     };
   </script>
 </body>
 </html>
-
