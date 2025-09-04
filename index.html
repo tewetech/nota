@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Nota Tewe Creative</title>
+  <style>
+    /* * CSS Global dan Struktur Halaman
+    * Mengatur font, margin, padding, dan layout dasar.
+    * Menggunakan Flexbox untuk menengahkan konten utama.
+    */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f7f6;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      gap: 20px;
+    }
+
+    /* * Container Nota
+    * Mengatur lebar, padding, background, dan shadow untuk kotak nota.
+    */
+    .nota-container {
+      width: 800px;
+      padding: 40px;
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    /* * Header Nota (Kop Surat)
+    * Layout kiri-kanan dengan elemen-elemen di sisi yang berlawanan.
+    */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+      border-bottom: 2px solid #e0e0e0;
+      padding-bottom: 20px;
+    }
+
+    /* * Bagian Kiri Header
+    * Mengatur posisi logo dan info perusahaan.
+    * Revisi: Menggeser konten ke kiri agar sejajar dengan garis.
+    */
+    .header-left {
+      display: flex;
+      align-items: center;
+      /* Penyesuaian agar teks lebih ke kiri */
+      margin-left: -40px; 
+    }
+
+    /* * Logo Perusahaan
+    * Mengatur ukuran logo.
+    */
+    .logo {
+      width: 170px;
+      height: 120px;
+      margin-right: 1px;
+      border-radius: 1%;
+      object-fit: cover;
+    }
+
+    /* * Info Perusahaan
+    * Mengatur font dan warna untuk nama perusahaan dan deskripsi.
+    */
+    .company-info h1 {
+      margin: 0;
+      font-size: 1.8em;
+      color: #333;
+    }
+
+    .company-info p {
+      margin: 5px 0 0;
+      font-size: 0.9em;
+      color: #777;
+    }
+
+    /* * Bagian Kanan Header
+    * Mengatur posisi teks E-NOTA dan nomornya.
+    */
+    .header-right {
+      text-align: right;
+    }
+
+    .header-right h2 {
+      margin: 0;
+      font-size: 2.5em;
+      color: #333;
+    }
+
+    .header-right p {
+      margin: 5px 0 0;
+      font-size: 0.9em;
+      color: #555;
+    }
+
+    /* * Bagian Informasi Pelanggan
+    * Mengatur layout menggunakan Grid untuk 'Kepada', 'Tanggal', 'Order'.
+    */
+    .info-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+    }
+
+    .info-item label {
+      font-weight: bold;
+      color: #555;
+      width: 100px;
+    }
+
+    .info-item span {
+      color: #333;
+    }
+
+    /* * Tabel Barang
+    * Mengatur styling tabel, border, dan shadow.
+    */
+    .table-container {
+      margin-bottom: 30px;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9em;
+      table-layout: fixed;
+    }
+
+    thead {
+      background-color: #007bff;
+      color: #fff;
+    }
+
+    thead tr th:first-child {
+      border-top-left-radius: 8px;
+    }
+    thead tr th:last-child {
+      border-top-right-radius: 8px;
+    }
+
+    th, td {
+      padding: 12px 10px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    /* Mengatur lebar kolom tabel */
+    th:nth-child(1), td:nth-child(1) { width: 40px; text-align: center; }
+    th:nth-child(2), td:nth-child(2) { width: 70px; text-align: center; }
+    th:nth-child(3), td:nth-child(3) { width: 220px; }
+    th:nth-child(4), td:nth-child(4) { width: 120px; text-align: right; }
+    th:nth-child(5), td:nth-child(5) { width: 160px; text-align: right; white-space: nowrap; }
+    th:nth-child(6), td:nth-child(6) { width: 70px; text-align: center; }
+
+    tbody tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    td input {
+      width: 100%;
+      border: none;
+      background: transparent;
+      padding: 5px;
+      text-align: inherit;
+    }
+
+    /* * Bagian Ringkasan
+    * Mengatur layout Flexbox untuk catatan dan total.
+    */
+    .summary-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    /* Catatan Penting */
+    .notes {
+      width: 45%;
+      font-size: 0.8em;
+      color: #777;
+    }
+
+    .notes h4 {
+      margin: 0 0 10px;
+      color: #555;
+    }
+
+    /* Total Harga */
+    .total-section {
+      width: 45%;
+      text-align: right;
+    }
+    
+    .total-section .total-label {
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .total-section .total-amount {
+      font-size: 2.2em;
+      font-weight: bold;
+      color: #007bff;
+      margin-top: 5px;
+    }
+
+    /* * Bagian Tanda Tangan
+    * Mengatur posisi tanda tangan agar rata tengah.
+    */
+    .signature {
+      text-align: center;
+      margin-top: 25px;
+    }
+
+    /* * Kontrol Input
+    * Mengatur styling untuk bagian input, tombol, dan posisinya.
+    */
+    .input-controls {
+      position: sticky;
+      top: 20px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      z-index: 1000;
+      max-height: calc(100vh - 40px);
+      overflow-y: auto;
+      width: 300px;
+    }
+
+    .input-controls h3 {
+      margin: 0 0 10px;
+      font-size: 1.2em;
+      color: #333;
+    }
+
+    .input-controls input, .input-controls button {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    .input-controls button {
+      background-color: #28a745;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .input-controls button:hover {
+      background-color: #218838;
+    }
+
+    .btn-delete {
+      background-color: #dc3545 !important;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .btn-reset {
+      background-color: #fd7e14 !important;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    /* * Media Query untuk Cetak
+    * Mengatur tampilan khusus saat halaman dicetak.
+    */
+    @media print {
+      body {
+        background: #fff;
+        padding: 0;
+        display: block;
+      }
+      .nota-container {
+        box-shadow: none;
+        border: none;
+        padding: 20px;
+        width: 100%;
+      }
+      .input-controls {
+        display: none; /* Menyembunyikan kontrol input saat mencetak */
+      }
+      /* Menyesuaikan lebar kolom tabel untuk cetak */
+      th, td {
+          padding: 8px 5px;
+      }
+      th:nth-child(1), td:nth-child(1) { width: 5%; }
+      th:nth-child(2), td:nth-child(2) { width: 10%; }
+      th:nth-child(3), td:nth-child(3) { width: 40%; }
+      th:nth-child(4), td:nth-child(4) { width: 20%; text-align: right; }
+      th:nth-child(5), td:nth-child(5) { width: 25%; text-align: right; white-space: nowrap; }
+      th:nth-child(6), td:nth-child(6) { display: none; } /* Sembunyikan kolom Aksi */
+    }
+
+    /* * Media Query untuk Tampilan Responsif
+    * Mengatur tata letak untuk layar yang lebih kecil.
+    */
+    @media (max-width: 1200px) {
+      body {
+        flex-direction: column;
+        align-items: center;
+      }
+      .nota-container {
+        width: 95%;
+        padding: 20px;
+      }
+      .input-controls {
+        position: relative;
+        width: 95%;
+        margin-bottom: 20px;
+        max-height: none;
+      }
+      .info-section {
+        grid-template-columns: 1fr;
+      }
+      .summary-section {
+        flex-direction: column;
+        gap: 20px;
+      }
+      .notes, .total-section {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="nota-container" id="nota">
+    <div class="header">
+      <div class="header-left">
+        <img src="logo.svg" class="logo" alt="Logo">
+        <div class="company-info">
+          <h1>Tewe Creative</h1>
+          <p>Jasa Desain, Cetak Stiker, Instal Software, dll.</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <h2>E-NOTA</h2>
+        <p id="noNota">NO: -</p>
+      </div>
+    </div>
+
+    <div class="info-section">
+      <div class="info-item"><label>Kepada:</label><span id="kepadaNota">-</span></div>
+      <div class="info-item"><label>Tanggal:</label><span id="tanggalNota">-</span></div>
+      <div class="info-item"><label>Order:</label><span id="orderNota">-</span></div>
+    </div>
+
+    <div class="table-container">
+      <table id="tabelBarang">
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Banyaknya</th>
+            <th>Nama Barang</th>
+            <th>Harga</th>
+            <th>Jumlah</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="item-row">
+            <td class="item-no">1</td>
+            <td><input type="number" class="banyaknya-input" value="1" min="1" oninput="calculateTotal()"></td>
+            <td><input type="text" class="nama-barang-input" placeholder="Nama barang/jasa"></td>
+            <td><input type="text" class="harga-input" value="Rp 0" oninput="formatHarga(this); calculateTotal()"></td>
+            <td class="jumlah-cell">Rp 0</td>
+            <td><button class="btn-delete" onclick="deleteRow(this)">Hapus</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="summary-section">
+      <div class="notes">
+        <h4>Catatan Penting:</h4>
+        <p>Barang yang sudah dibeli tidak dapat ditukar atau dikembalikan.</p>
+        <p>Terima kasih telah berbelanja di toko kami.</p>
+      </div>
+      <div class="total-section">
+        <div class="total-label">TOTAL (LUNAS)</div>
+        <div class="total-amount" id="totalHarga">Rp 0</div>
+      </div>
+    </div>
+
+    <div class="signature">
+      <p>Hormat Kami,</p>
+      <p>( Tewe Creative )</p>
+    </div>
+  </div>
+
+  <div class="input-controls">
+    <h3>Input Data Nota</h3>
+    <input type="text" id="noNotaInput" placeholder="No. Nota">
+    <input type="text" id="tanggalInput" placeholder="Tanggal (DD/MM/YYYY)">
+    <input type="text" id="kepadaInput" placeholder="Kepada">
+    <input type="text" id="orderInput" placeholder="Order">
+    <button onclick="updateNota()">Update Data</button>
+    <button onclick="addRow()">Tambah Barang</button>
+    <button onclick="printAndSaveNota()">Print Nota</button> <button class="btn-reset" onclick="resetData()">Reset Data</button>
+  </div>
+
+  <script>
+    // Fungsi untuk memformat harga ke format Rupiah
+    function formatHarga(input) {
+      let value = input.value.replace(/[^\d]/g, "");
+      if (value === "") {
+        input.value = "Rp 0";
+        return;
+      }
+      let formatted = new Intl.NumberFormat("id-ID").format(value);
+      input.value = "Rp " + formatted;
+    }
+
+    // Fungsi untuk menguraikan harga dari format Rupiah menjadi integer
+    function parseHarga(value) {
+      return parseInt(value.replace(/[^\d]/g, "")) || 0;
+    }
+
+    // Fungsi untuk membuat nomor nota otomatis
+    function generateNotaNumber() {
+      const prefix = "E-NT-TR-2025-ORD9-";
+      let counter = 1;
+      const savedCounter = localStorage.getItem("notaCounter");
+      if (savedCounter) {
+        counter = parseInt(savedCounter) + 1;
+      }
+      localStorage.setItem("notaCounter", counter);
+      return prefix + String(counter).padStart(3, "0");
+    }
+
+    // Fungsi untuk memperbarui data nota di tampilan utama
+    function updateNota() {
+      document.getElementById("noNota").textContent = "NO: " + (document.getElementById("noNotaInput").value || "-");
+      document.getElementById("tanggalNota").textContent = document.getElementById("tanggalInput").value || "-";
+      document.getElementById("kepadaNota").textContent = document.getElementById("kepadaInput").value || "-";
+      document.getElementById("orderNota").textContent = document.getElementById("orderInput").value || "-";
+    }
+
+    // Fungsi untuk menambah baris barang baru ke tabel
+    function addRow() {
+      const tableBody = document.querySelector("#tabelBarang tbody");
+      const rowCount = tableBody.rows.length;
+      const newRow = document.createElement("tr");
+      newRow.className = "item-row";
+      newRow.innerHTML = `
+        <td class="item-no">${rowCount + 1}</td>
+        <td><input type="number" class="banyaknya-input" value="1" min="1" oninput="calculateTotal()"></td>
+        <td><input type="text" class="nama-barang-input" placeholder="Nama barang/jasa"></td>
+        <td><input type="text" class="harga-input" value="Rp 0" oninput="formatHarga(this); calculateTotal()"></td>
+        <td class="jumlah-cell">Rp 0</td>
+        <td><button class="btn-delete" onclick="deleteRow(this)">Hapus</button></td>
+      `;
+      tableBody.appendChild(newRow);
+      updateRowNumbers();
+    }
+
+    // Fungsi untuk menghapus baris barang
+    function deleteRow(button) {
+      const tableBody = document.querySelector("#tabelBarang tbody");
+      if (tableBody.rows.length > 1) {
+        button.closest("tr").remove();
+        updateRowNumbers();
+        calculateTotal();
+      } else {
+        alert("Minimal harus ada 1 baris barang!");
+      }
+    }
+
+    // Fungsi untuk memperbarui nomor urut baris setelah menambah/menghapus
+    function updateRowNumbers() {
+      const rows = document.querySelectorAll(".item-row");
+      rows.forEach((row, index) => {
+        row.querySelector(".item-no").textContent = index + 1;
+      });
+    }
+
+    // Fungsi untuk menghitung total harga dari semua barang
+    function calculateTotal() {
+      let grandTotal = 0;
+      document.querySelectorAll(".item-row").forEach(row => {
+        const banyaknya = parseFloat(row.querySelector(".banyaknya-input").value) || 0;
+        const harga = parseHarga(row.querySelector(".harga-input").value);
+        const jumlah = banyaknya * harga;
+        row.querySelector(".jumlah-cell").textContent = "Rp " + jumlah.toLocaleString("id-ID");
+        grandTotal += jumlah;
+      });
+      document.getElementById("totalHarga").textContent = "Rp " + grandTotal.toLocaleString("id-ID");
+    }
+
+    // Fungsi untuk menyimpan data secara otomatis ke Local Storage
+    function saveNota() {
+      const data = {
+        noNota: document.getElementById("noNotaInput").value,
+        tanggal: document.getElementById("tanggalInput").value,
+        kepada: document.getElementById("kepadaInput").value,
+        order: document.getElementById("orderInput").value,
+        items: []
+      };
+      document.querySelectorAll(".item-row").forEach(row => {
+        data.items.push({
+          banyaknya: row.querySelector(".banyaknya-input").value,
+          namaBarang: row.querySelector(".nama-barang-input").value,
+          harga: row.querySelector(".harga-input").value
+        });
+      });
+      localStorage.setItem("enotaData", JSON.stringify(data));
+    }
+
+    // Fungsi untuk mencetak nota dan menyimpan data setelahnya
+    function printAndSaveNota() {
+      saveNota();
+      const scrollPos = window.pageYOffset;
+      window.print();
+      setTimeout(() => { window.scrollTo(0, scrollPos); }, 100);
+    }
+
+    // Fungsi untuk mereset data nota dan penyimpanan lokal
+    function resetData() {
+      if (confirm("Apakah Anda yakin ingin mereset data?")) {
+        localStorage.removeItem("enotaData");
+        location.reload();
+      }
+    }
+
+    // Fungsi untuk memuat data dari Local Storage saat halaman dimuat
+    function loadSavedData() {
+      const savedData = localStorage.getItem("enotaData");
+      if (savedData) {
+        const data = JSON.parse(savedData);
+        document.getElementById("noNotaInput").value = data.noNota || generateNotaNumber();
+        document.getElementById("tanggalInput").value = data.tanggal || "";
+        document.getElementById("kepadaInput").value = data.kepada || "";
+        document.getElementById("orderInput").value = data.order || "";
+
+        const tableBody = document.querySelector("#tabelBarang tbody");
+        tableBody.innerHTML = "";
+        if (data.items && data.items.length > 0) {
+          data.items.forEach(item => {
+            const newRow = document.createElement("tr");
+            newRow.className = "item-row";
+            newRow.innerHTML = `
+              <td class="item-no"></td>
+              <td><input type="number" class="banyaknya-input" value="${item.banyaknya}" min="1" oninput="calculateTotal()"></td>
+              <td><input type="text" class="nama-barang-input" value="${item.namaBarang}" placeholder="Nama barang/jasa"></td>
+              <td><input type="text" class="harga-input" value="${item.harga}" oninput="formatHarga(this); calculateTotal()"></td>
+              <td class="jumlah-cell">Rp 0</td>
+              <td><button class="btn-delete" onclick="deleteRow(this)">Hapus</button></td>
+            `;
+            tableBody.appendChild(newRow);
+          });
+        } else {
+          // Jika tidak ada data barang yang tersimpan, tambahkan satu baris kosong
+          addRow();
+        }
+
+        updateRowNumbers();
+        calculateTotal();
+        updateNota();
+      } else {
+        // Jika tidak ada data tersimpan, buat nomor nota baru dan tambahkan baris awal
+        document.getElementById("noNotaInput").value = generateNotaNumber();
+        addRow();
+        updateNota();
+      }
+    }
+
+    // Event listener yang berjalan saat halaman selesai dimuat
+    window.onload = () => {
+      loadSavedData();
+    };
+  </script>
+</body>
+</html>
