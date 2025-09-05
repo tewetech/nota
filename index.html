@@ -470,6 +470,11 @@
          * Mengatur tampilan khusus saat halaman dicetak.
          */
         @media print {
+            /* Gaya untuk menyembunyikan elemen saat mencetak */
+            .print-hide {
+                display: none !important;
+            }
+
             body {
                 background: #fff;
                 padding: 0;
@@ -1023,24 +1028,58 @@
     }
 
     /**
+     * @description Fungsi untuk memeriksa apakah baris transaksi kosong.
+     * @param {Element} row - Elemen baris tabel.
+     * @returns {boolean} True jika baris kosong, false sebaliknya.
+     */
+    function isRowEmpty(row) {
+        const namaBarang = row.querySelector(".nama-barang-input").value.trim();
+        return namaBarang === '';
+    }
+
+    /**
      * @description Fungsi untuk mencetak dokumen.
      */
     function printDocument() {
-      const watermarkElementId = currentMode === 'nota' ? "watermark-nota" : "watermark-invoice";
-      const watermarkElement = document.getElementById(watermarkElementId);
-      const now = new Date();
-      const dateOptions = { day: '2-digit', month: 'long', year: 'numeric' };
-      const dateString = now.toLocaleDateString('id-ID', dateOptions);
-      const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
-      const timeString = now.toLocaleTimeString('id-ID', timeOptions);
-      watermarkElement.textContent = `Dicetak pada: ${dateString}, Pukul ${timeString.replace(/\./g, ':')}`;
+        // Identifikasi tabel yang aktif
+        const tableBody = document.querySelector(`#tabelBarang${currentMode === 'nota' ? 'Nota' : 'Invoice'} tbody`);
+        const rows = tableBody.querySelectorAll(".item-row");
+        
+        // Simpan baris-baris kosong yang akan disembunyikan
+        const emptyRows = [];
+        rows.forEach(row => {
+            if (isRowEmpty(row)) {
+                emptyRows.push(row);
+                // Tambahkan kelas untuk menyembunyikan saat dicetak
+                row.classList.add('print-hide');
+            }
+        });
 
-      const scrollPos = window.pageYOffset;
-      window.print();
-      setTimeout(() => {
-        window.scrollTo(0, scrollPos);
-        watermarkElement.textContent = '';
-      }, 100);
+        // Tampilkan watermark
+        const watermarkElementId = currentMode === 'nota' ? "watermark-nota" : "watermark-invoice";
+        const watermarkElement = document.getElementById(watermarkElementId);
+        const now = new Date();
+        const dateOptions = { day: '2-digit', month: 'long', year: 'numeric' };
+        const dateString = now.toLocaleDateString('id-ID', dateOptions);
+        const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+        const timeString = now.toLocaleTimeString('id-ID', timeOptions);
+        watermarkElement.textContent = `Dicetak pada: ${dateString}, Pukul ${timeString.replace(/\./g, ':')}`;
+        
+        // Simpan posisi scroll saat ini
+        const scrollPos = window.pageYOffset;
+        
+        // Lakukan pencetakan
+        window.print();
+        
+        // Setelah pencetakan, kembalikan tampilan
+        setTimeout(() => {
+            emptyRows.forEach(row => {
+                // Hapus kelas yang menyembunyikan elemen
+                row.classList.remove('print-hide');
+            });
+            window.scrollTo(0, scrollPos); // Kembalikan posisi scroll
+            watermarkElement.textContent = ''; // Hapus watermark
+        }, 100);
     }
 
     /**
