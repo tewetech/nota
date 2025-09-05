@@ -317,6 +317,27 @@
         .signature-content-wrapper {
             display: inline-block; /* Membuat kontainer menyesuaikan lebar konten */
             text-align: center; /* Menengahkan teks di dalam kontainer */
+            position: relative;
+        }
+        
+        /* Gaya untuk Watermark Tanda Tangan Menggunakan Tag Gambar */
+        .signature-watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 190px;
+            height: 190px;
+            opacity: 100;
+            z-index: 0;
+            pointer-events: none; /* Mencegah gambar dari interaksi mouse */
+        }
+        
+        /* Memastikan teks tanda tangan berada di atas gambar */
+        .signature-content-wrapper p {
+            position: relative;
+            z-index: 1;
+            margin-bottom: 30px;
         }
 
         /*
@@ -638,6 +659,7 @@
     </div>
     <div class="signature">
         <div class="signature-content-wrapper">
+          <img src="ttd.svg" alt="Tanda Tangan" class="signature-watermark">
           <p>Hormat Kami,</p>
           <p>( Tewe Creative )</p>
         </div>
@@ -709,6 +731,7 @@
     </div>
     <div class="signature">
         <div class="signature-content-wrapper">
+          <img src="ttd.svg" alt="Tanda Tangan" class="signature-watermark">
           <p>Hormat Kami,</p>
           <p>( Tewe Creative )</p>
         </div>
