@@ -845,7 +845,7 @@
       const prefix = currentMode === 'nota' ? "E-NOTA" : "E-INVOICE";
       
       // Menggabungkan semua komponen menjadi format yang diminta.
-      return `${prefix}-${year}-${month}-${day}-${hours}${minutes}-${seconds}`;
+      return `${prefix}-${year}-${month}-${day}-${hours}${minutes}${seconds}`;
     }
 
     /**
@@ -1191,3 +1191,4 @@
   </script>
 </body>
 </html>
+
