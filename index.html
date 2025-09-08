@@ -19,7 +19,7 @@
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            min-height: 100vh;
+            min-height: 10vh;
             gap: 20px;
         }
 
@@ -840,11 +840,12 @@
       const day = String(now.getDate()).padStart(2, '0');
       const hours = String(now.getHours()).padStart(2, '0');
       const minutes = String(now.getMinutes()).padStart(2, '0');
+	  const seconds = String(now.getSeconds()).padStart(1, '0');
 
-      const prefix = currentMode === 'nota' ? "E-NT-TR" : "E-INV-TR";
+      const prefix = currentMode === 'nota' ? "E-NOTA" : "E-INVOICE";
       
       // Menggabungkan semua komponen menjadi format yang diminta.
-      return `${prefix}-${year}-ORD${month}-${day}-${hours}-${minutes}`;
+      return `${prefix}-${year}-ORD-${month}-${day}-${hours}${minutes}-${seconds}`;
     }
 
     /**
@@ -1062,6 +1063,7 @@
 
     /**
      * @description Fungsi untuk mencetak dokumen.
+     * Fungsi ini sudah direvisi untuk mengganti nama file cetak secara otomatis.
      */
     function printDocument() {
         // Identifikasi tabel yang aktif
@@ -1077,6 +1079,24 @@
                 row.classList.add('print-hide');
             }
         });
+
+        // Simpan judul dokumen asli
+        const originalTitle = document.title;
+        
+        // Dapatkan data untuk penamaan file baru
+        let documentName = "";
+        if (currentMode === 'nota') {
+            const kepada = document.getElementById('kepadaNota').textContent.trim();
+            const noNota = document.getElementById('noNota').textContent.replace('NO: ', '').trim();
+            documentName = `${kepada}-${noNota}`;
+        } else {
+            const kepada = document.getElementById('kepadaInvoice').textContent.trim();
+            const noInvoice = document.getElementById('noInvoice').textContent.replace('NO: ', '').trim();
+            documentName = `${kepada}-${noInvoice}`;
+        }
+        
+        // Ganti judul dokumen sementara untuk penamaan file
+        document.title = documentName;
 
         // Tampilkan watermark
         const watermarkElementId = currentMode === 'nota' ? "watermark-nota" : "watermark-invoice";
@@ -1102,6 +1122,7 @@
             });
             window.scrollTo(0, scrollPos); // Kembalikan posisi scroll
             watermarkElement.textContent = ''; // Hapus watermark
+            document.title = originalTitle; // Kembalikan judul dokumen
         }, 100);
     }
 
