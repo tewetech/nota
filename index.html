@@ -1059,17 +1059,38 @@
 
     /**
      * Fungsi untuk memformat input harga ke format Rupiah saat diketik (digunakan pada input biasa)
+     * REVISI: Mengizinkan input tanda minus (-) untuk diskon.
      * @param {HTMLInputElement} inputElement 
      */
     function formatHarga(inputElement) {
-      let value = inputElement.value.replace(/[^\d]/g, ""); // Hapus karakter non-digit
+      // Mengambil nilai asli
+      let originalValue = inputElement.value;
+      
+      // Cek apakah ada tanda minus di awal input (untuk diskon)
+      let isNegative = originalValue.includes("-");
+      
+      // Hapus karakter non-digit
+      let value = originalValue.replace(/[^\d]/g, ""); 
+      
       if (value === "") {
+        // Jika user hanya mengetik "-", biarkan tampil agar bisa lanjut mengetik angka
+        if (isNegative && originalValue.trim() === "-") {
+            inputElement.value = "-";
+            return;
+        }
         inputElement.value = "Rp 0";
         return;
       }
+
       // Tambahkan titik sebagai pemisah ribuan
       let formatted = new Intl.NumberFormat("id-ID").format(value);
-      inputElement.value = "Rp " + formatted;
+      
+      // Jika negatif, tambahkan tanda minus setelah "Rp"
+      if (isNegative) {
+        inputElement.value = "Rp -" + formatted;
+      } else {
+        inputElement.value = "Rp " + formatted;
+      }
     }
 
     /**
@@ -1088,12 +1109,13 @@
 
     /**
      * Fungsi utilitas untuk mengubah string Rupiah menjadi angka integer
+     * REVISI: Memastikan tanda negatif terbaca dengan benar.
      * @param {string} value 
      * @returns {number}
      */
     function parseHarga(value) {
-      // Menghapus semua karakter non-digit kecuali tanda minus (jika ada)
-      // Menggunakan `parseInt` akan mengabaikan sisa string setelah angka
+      // Menghapus semua karakter non-digit KECUALI tanda minus
+      // Contoh: "Rp -50.000" menjadi "-50000"
       return parseInt(value.replace(/[^\d-]/g, "")) || 0;
     }
 
@@ -1203,9 +1225,10 @@
 
         if (row === lastRow) {
             const inputs = Array.from(row.querySelectorAll('input'));
-            // Cek apakah input Nama Barang terisi DAN Harga > 0
+            // Cek apakah input Nama Barang terisi DAN Harga TIDAK 0 (bisa positif atau negatif untuk diskon)
+            // REVISI: Mengubah logika dari > 0 menjadi !== 0 agar diskon bisa memicu baris baru
             const isNamaBarangFilled = inputs.some(input => input.classList.contains('nama-barang-input') && input.value.trim() !== '');
-            const isHargaValid = inputs.some(input => input.classList.contains('harga-input') && parseHarga(input.value) > 0);
+            const isHargaValid = inputs.some(input => input.classList.contains('harga-input') && parseHarga(input.value) !== 0);
 
             if (isNamaBarangFilled && isHargaValid) {
                 addRow();
@@ -1312,7 +1335,7 @@
         const banyaknya = parseFloat(row.querySelector(".banyaknya-input").value) || 0;
         const harga = parseHarga(row.querySelector(".harga-input").value);
         const jumlah = banyaknya * harga;
-        // Memperbarui kolom jumlah baris
+        // Memperbarui kolom jumlah baris (mendukung negatif untuk diskon)
         row.querySelector(".jumlah-cell").textContent = "Rp " + jumlah.toLocaleString("id-ID");
         grandTotal += jumlah;
       });
@@ -1369,8 +1392,9 @@
             const namaBarang = row.querySelector(".nama-barang-input").value.trim();
             const harga = parseHarga(row.querySelector(".harga-input").value);
             
-            // Hanya masukkan baris yang ada Nama Barang dan Harga > 0
-            if (namaBarang !== '' && harga > 0) {
+            // REVISI: Validasi diubah. Masukkan baris jika nama barang ada DAN harga TIDAK NOL.
+            // Ini memungkinkan item Diskon (harga negatif) untuk disimpan.
+            if (namaBarang !== '' && harga !== 0) {
                 const banyaknya = parseFloat(row.querySelector(".banyaknya-input").value) || 0;
                 const jumlah = banyaknya * harga;
                 
@@ -1403,7 +1427,7 @@
         
         // Validasi minimal: harus ada minimal 1 item yang terisi
         if (dataToSend.items.length === 0) {
-            await customAlert("Validasi Gagal", "Harap isi Nama Barang dan Harga (Rp > 0) pada minimal satu baris barang. Proses cetak dibatalkan.");
+            await customAlert("Validasi Gagal", "Harap isi Nama Barang dan Harga (tidak boleh 0) pada minimal satu baris barang. Proses cetak dibatalkan.");
             return false;
         }
 
@@ -1617,15 +1641,10 @@
 
     // Inisialisasi saat halaman pertama kali dibuka
     window.onload = () => {
-      // Default ke Invoice (seperti di script asli Anda, tapi di HTML defaultnya ke 'invoice')
-      // Mengubah inisialisasi agar sesuai dengan active class di HTML
+      // Mengatur mode default sesuai dengan yang aktif di HTML
       switchMode('nota'); 
     };
   </script>
 </body>
 
 </html>
-
-
-
-
